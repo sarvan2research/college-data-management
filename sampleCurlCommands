@@ -1,0 +1,31 @@
+curl -X POST http://localhost:8080/api/college-data/import \
+   -H "Content-Type: application/json" \
+   -d '{"rawData": "1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::BY::BIO MEDICAL ENGINEERING (SS)::2729::5854::4641::4537::::::19808::47566::
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::CE::CIVIL ENGINEERING::2715::5419::8060::4181::::::14532::10516::
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::CM::COMPUTER SCIENCE AND ENGINEERING (SS)::176::335::670::384::::::2191::7449::
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::CS::COMPUTER SCIENCE AND ENGINEERING::44::83::429::138::::::1018::2560::5995
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::EC::ELECTRONICS AND COMMUNICATION ENGINEERING::107::319::1023::467::::::1266::1878::
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::EE::ELECTRICAL AND ELECTRONICS ENGINEERING::1017::1616::1672::1794::::::5223::12353::8249
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::EL::Electronics Engineering (VLSI Design and Technology) (SS)::1180::1557::2976::2429::::::7100::::56304
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::EM::ELECTRONICS AND COMMUNICATION ENGINEERING (SS)::415::498::1021::1075::::::3717::6057::23107
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::GI::GEO INFORMATICS::6789::11621::9876::14021::::::29764::33519::
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::IE::INDUSTRIAL ENGINEERING::7668::14193::14031::15940::::::31048::56869::49213
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::IM::INFORMATION TECHNOLOGY (SS)::525::859::930::1089::::::3833::6904::4254
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::MA::MATERIAL SCIENCE AND ENGINEERING (SS)::9017::14510::10240::15502::::::33438::69507::
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::ME::MECHANICAL ENGINEERING::2993::4962::3950::5155::::::12487::20217::16460
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::MI::MINING ENGINEERING::6088::13457::14291::9128::::::22211::55189::
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::MN::MANUFACTURING ENGINEERING::10259::17813::13785::16601::::::33473::55954::46668
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::PT::PRINTING & PACKING TECHNOLOGY::16859::30405::50519::37157::::::49852::87940::48705
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::XC::CIVIL ENGINEERING (TAMIL MEDIUM)::10951::26179::22364::22031::::::49912::72160::
+                    1::University Departments of Anna University Chennai - CEG Campus Sardar Patel Road Guindy Chennai 600 025::XM::MECHANICAL ENGINEERING (TAMIL MEDIUM)::11782::25325::14310::25822::::::57016::::68099"}'
+
+curl -X POST http://localhost:8080/api/college-data/importFile \
+   -H "Content-Type: multipart/form-data" \
+   -F "file=@2023_CutoffData_V2024.txt"
+
+ curl -X POST \
+  http://localhost:8080/api/college-data/eligible-colleges \
+  -H 'Content-Type: application/json' \
+  -d '{"name": "Disha", "mobileNumber": "1234567890", "community": "BC", "course": "CS", "district": "Salem", "mathsMarks": 89, "chemistryMarks": 90, "physicsMarks": 90}'
+
+

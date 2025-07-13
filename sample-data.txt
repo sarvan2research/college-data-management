@@ -1,0 +1,5 @@
+1::University Departments of Anna University, Chennai - CEG Campus, Sardar Patel Road, Guindy, Chennai 600 025::BY::BIO- MEDICAL ENGINEERING (SS)::2022::196::193::194.5::192::0::0::186.185::193.725::178.405
+2::University Departments of Anna University, Chennai - CEG Campus, Sardar Patel Road, Guindy, Chennai 600 025::CS::COMPUTER SCIENCE ENGINEERING::2022::195::190::192::188::0::0::185::190::175
+3::University Departments of Anna University, Chennai - CEG Campus, Sardar Patel Road, Guindy, Chennai 600 025::EC::ELECTRONICS AND COMMUNICATION ENGINEERING::2022::194::189::191::187::0::0::184::189::174
+1::University Departments of Anna University, Chennai - CEG Campus, Sardar Patel Road, Guindy, Chennai 600 025::BY::BIO- MEDICAL ENGINEERING (SS)::2023::198::195::196::194::0::0::188::195::180
+2::University Departments of Anna University, Chennai - CEG Campus, Sardar Patel Road, Guindy, Chennai 600 025::CS::COMPUTER SCIENCE ENGINEERING::2023::197::192::194::190::0::0::187::192::177
