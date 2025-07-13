@@ -29,7 +29,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "target/*.jar"
-          target: "~/app/"
+          target: "~/app"
+          strip_components: 2  # ✅ FLATTENS the path (optional)
 
       - name: Restart Spring Boot App via SSH
         uses: appleboy/ssh-action@v1.0.0
@@ -40,4 +41,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             pkill -f 'java -jar' || true
-            nohup java -jar ~/app/*.jar > app.log 2>&1 &
+            nohup java -jar ~/app/*.jar > ~/app/app.log 2>&1 &
