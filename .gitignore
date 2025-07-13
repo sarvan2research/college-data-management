@@ -8,7 +8,7 @@
 # Ignore Maven or Gradle build directories
 target/
 build/
+.oca/
 
 # Ignore log files
 *.log
-.oca/
