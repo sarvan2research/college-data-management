@@ -35,7 +35,7 @@ public interface CollegeCourseDataRepository extends JpaRepository<CollegeCourse
 //                                              @Param("courseCode") String courseCode,
 //                                              @Param("cutoff") BigDecimal cutoff);
 
- @Query("SELECT c FROM CollegeCourseData c WHERE c.courseCode = :courseCode AND c.district = :district AND CASE :community WHEN 'OC' THEN c.cutOffOC WHEN 'BC' THEN c.cutOffBC WHEN 'MBC' THEN c.cutOffMBC WHEN 'BCM' THEN c.cutOffBCM WHEN 'SC' THEN c.cutOffSC WHEN 'SCA' THEN c.cutOffSCA WHEN 'ST' THEN c.cutOffST END BETWEEN :minCutoff AND :maxCutoff ORDER BY CASE :community WHEN 'OC' THEN c.cutOffOC WHEN 'BC' THEN c.cutOffBC WHEN 'MBC' THEN c.cutOffMBC WHEN 'BCM' THEN c.cutOffBCM WHEN 'SC' THEN c.cutOffSC WHEN 'SCA' THEN c.cutOffSCA WHEN 'ST' THEN c.cutOffST END ASC")
+ @Query("SELECT c FROM CollegeCourseData c WHERE c.courseCode = :courseCode AND (:district IS NULL OR c.district = :district) AND CASE :community WHEN 'OC' THEN c.cutOffOC WHEN 'BC' THEN c.cutOffBC WHEN 'MBC' THEN c.cutOffMBC WHEN 'BCM' THEN c.cutOffBCM WHEN 'SC' THEN c.cutOffSC WHEN 'SCA' THEN c.cutOffSCA WHEN 'ST' THEN c.cutOffST END BETWEEN :minCutoff AND :maxCutoff ORDER BY CASE :community WHEN 'OC' THEN c.cutOffOC WHEN 'BC' THEN c.cutOffBC WHEN 'MBC' THEN c.cutOffMBC WHEN 'BCM' THEN c.cutOffBCM WHEN 'SC' THEN c.cutOffSC WHEN 'SCA' THEN c.cutOffSCA WHEN 'ST' THEN c.cutOffST END DESC")
  List<CollegeCourseData> findEligibleCollegesWithCutoffRange(@Param("community") String community,
                                                              @Param("courseCode") String courseCode,
                                                              @Param("district") String district,

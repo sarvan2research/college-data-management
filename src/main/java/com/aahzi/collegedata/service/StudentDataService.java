@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -23,22 +24,39 @@ public class StudentDataService {
     private CollegeCourseDataRepository collegeCourseDataRepository;
 
     @Autowired
-    private DataPersistenceService dataPersistenceService;
+    private StudentDataPersistenceService studentDataPersistenceService;
 
     public void saveStudentData(StudentData studentData) {
         studentDataRepository.save(studentData);
-        //dataPersistenceService.saveStudentDataToFile(studentData);
+        studentDataPersistenceService.saveDataToFile(Arrays.asList(studentData));
     }
 
     public List<EligibleCollegeResponse> getEligibleColleges(StudentEligibilityRequest studentEligibilityRequest) {
-        StudentData studentData=saveStudentData(studentEligibilityRequest);
-        BigDecimal cutoff = (studentData.getPhysics().add(studentData.getChemistry()).divide(BigDecimal.valueOf(2))).add(studentData.getMaths());
-        System.out.println("Cutoff of given: "+ cutoff);
-        BigDecimal maxCutOff=cutoff.add(BigDecimal.valueOf(5));
-        BigDecimal minCutOff=cutoff.subtract(BigDecimal.valueOf(5));
-        System.out.println("max:min cutoff: "+ maxCutOff+":"+minCutOff);
-        List<CollegeCourseData> eligibleColleges=collegeCourseDataRepository.findEligibleCollegesWithCutoffRange(studentData.getCommunity(),"CS",studentData.getDistrict(), minCutOff,maxCutOff);
-        return getEligibleCollegeResponses(eligibleColleges);
+        StudentData studentData = saveStudentData(studentEligibilityRequest);
+        BigDecimal cutoff = calculateCutoff(studentData);
+        BigDecimal maxCutOff = cutoff.add(BigDecimal.valueOf(5));
+        BigDecimal minCutOff = cutoff.subtract(BigDecimal.valueOf(5));
+        return getEligibleCollegesRecursive(studentData, "CS", maxCutOff, minCutOff);
+    }
+
+    private List<EligibleCollegeResponse> getEligibleCollegesRecursive(StudentData studentData, String courseCode, BigDecimal maxCutOff, BigDecimal minCutOff) {
+        List<CollegeCourseData> eligibleColleges = collegeCourseDataRepository.findEligibleCollegesWithCutoffRange(
+                studentData.getCommunity(),
+                courseCode,
+                studentData.getDistrict(),
+                minCutOff,
+                maxCutOff
+        );
+        if (eligibleColleges.size() >= 10 || minCutOff.compareTo(BigDecimal.valueOf(80)) <= 0) {
+            return getEligibleCollegeResponses(eligibleColleges);
+        } else {
+            BigDecimal newMinCutOff = minCutOff.subtract(BigDecimal.valueOf(5));
+            return getEligibleCollegesRecursive(studentData, courseCode, maxCutOff, newMinCutOff);
+        }
+    }
+
+    private BigDecimal calculateCutoff(StudentData studentData) {
+        return (studentData.getPhysics().add(studentData.getChemistry()).divide(BigDecimal.valueOf(2))).add(studentData.getMaths());
     }
 
     private static List<EligibleCollegeResponse> getEligibleCollegeResponses(List<CollegeCourseData> eligibleColleges) {
@@ -66,9 +84,21 @@ public class StudentDataService {
         studentData.setPhysics(studentEligibilityRequest.getPhysicsMarks());
 
         studentDataRepository.save(studentData);
-        //TODO sarvan
-        //dataPersistenceService.saveStudentDataToFile(studentData);
+        studentDataPersistenceService.saveDataToFile(Arrays.asList(studentData));
         return studentData;
+    }
+
+    public long getStudentDataCount() {
+        return studentDataRepository.count();
+    }
+
+    public void loadDataFromFile() {
+        List<StudentData> data = studentDataPersistenceService.loadDataFromFile();
+        if (!data.isEmpty()) {
+            studentDataRepository.deleteAll();
+            studentDataRepository.saveAll(data);
+            System.out.println("Student Data loaded from file to database: " + data.size() + " records");
+        }
     }
 
 }

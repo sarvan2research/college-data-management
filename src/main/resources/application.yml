@@ -18,7 +18,10 @@ spring:
 
 app:
   data:
-    file-path: college-data.json
+    file-path: /tmp/college-data.json
+    import-on-startup: true
+  student:
+    file-path: /tmp/student-data.json
     import-on-startup: true
 
 server:

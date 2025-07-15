@@ -49,8 +49,4 @@ public class DataPersistenceService {
             return List.of();
         }
     }
-    
-    public boolean fileExists() {
-        return new File(filePath).exists();
-    }
 }

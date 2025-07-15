@@ -126,12 +126,13 @@ public class DataParserService {
     }
     
     private BigDecimal parseBigDecimal(String str) {
-        if (str == null || str.trim().isEmpty() || "0".equals(str.trim())) {
-            return null;
+        if (str == null || str.trim().isEmpty() || "***".equals(str.trim())) {
+            return BigDecimal.valueOf(80);
         }
         try {
             return new BigDecimal(str.trim());
         } catch (NumberFormatException e) {
+            System.out.println("Error parsing data line: " + str);
             return null;
         }
     }

@@ -25,5 +25,6 @@ Import Data
 - Find out unique user and stop repeated user by using (marks and course and mobileNumber). (Pay rs:10 and send txn id to our number , our team will call for further assistance).
 - Rank based analysis
 - Admin user related activity(access and usage).
+- Add new table for student-> resultcollege details
 
 
