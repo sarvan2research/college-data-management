@@ -18,7 +18,7 @@ public class StudentEligibilityRequest {
     private String community;
 
     @NotNull
-    private String course;
+    private String courseCode;
 
     private String district;
 
@@ -66,12 +66,12 @@ public class StudentEligibilityRequest {
         this.community = community;
     }
 
-    public String getCourse() {
-        return course;
+    public String getCourseCode() {
+        return courseCode;
     }
 
-    public void setCourse(String course) {
-        this.course = course;
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 
     public String getDistrict() {
@@ -104,5 +104,20 @@ public class StudentEligibilityRequest {
 
     public void setPhysicsMarks(BigDecimal physicsMarks) {
         this.physicsMarks = physicsMarks;
+    }
+
+    @Override
+    public String toString() {
+        return "StudentEligibilityRequest{" +
+                "name='" + name + '\'' +
+                ", mobileNumber='" + mobileNumber + '\'' +
+                ", community='" + community + '\'' +
+                ", course='" + courseCode + '\'' +
+                ", district='" + district + '\'' +
+                ", mathsMarks=" + mathsMarks +
+                ", chemistryMarks=" + chemistryMarks +
+                ", physicsMarks=" + physicsMarks +
+                ", cutoffMarks=" + cutoffMarks +
+                '}';
     }
 }

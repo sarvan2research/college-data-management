@@ -32,11 +32,12 @@ public class StudentDataService {
     }
 
     public List<EligibleCollegeResponse> getEligibleColleges(StudentEligibilityRequest studentEligibilityRequest) {
+        System.out.println(studentEligibilityRequest);
         StudentData studentData = saveStudentData(studentEligibilityRequest);
         BigDecimal cutoff = calculateCutoff(studentData);
         BigDecimal maxCutOff = cutoff.add(BigDecimal.valueOf(5));
         BigDecimal minCutOff = cutoff.subtract(BigDecimal.valueOf(5));
-        return getEligibleCollegesRecursive(studentData, "CS", maxCutOff, minCutOff);
+        return getEligibleCollegesRecursive(studentData, studentEligibilityRequest.getCourseCode(), maxCutOff, minCutOff);
     }
 
     private List<EligibleCollegeResponse> getEligibleCollegesRecursive(StudentData studentData, String courseCode, BigDecimal maxCutOff, BigDecimal minCutOff) {
@@ -77,7 +78,7 @@ public class StudentDataService {
         studentData.setName(studentEligibilityRequest.getName());
         studentData.setMobileNumber(studentEligibilityRequest.getMobileNumber());
         studentData.setCommunity(studentEligibilityRequest.getCommunity());
-        studentData.setCourse(studentEligibilityRequest.getCourse());
+        studentData.setCourse(studentEligibilityRequest.getCourseCode());
         studentData.setDistrict(studentEligibilityRequest.getDistrict());
         studentData.setMaths(studentEligibilityRequest.getMathsMarks());
         studentData.setChemistry(studentEligibilityRequest.getChemistryMarks());
