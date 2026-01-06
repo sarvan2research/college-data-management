@@ -12,19 +12,20 @@ import java.util.regex.Pattern;
 
 @Service
 public class DataParserService {
-    
+
     public List<CollegeCourseData> parseRawData(String rawData) {
         List<CollegeCourseData> dataList = new ArrayList<>();
-        
+
         if (rawData == null || rawData.trim().isEmpty()) {
             return dataList;
         }
-        
+
         String[] lines = rawData.split("\n");
-        
+
         for (String line : lines) {
-            if (line.trim().isEmpty()) continue;
-            
+            if (line.trim().isEmpty())
+                continue;
+
             try {
                 CollegeCourseData data = parseDataLine(line);
                 if (data != null) {
@@ -35,21 +36,21 @@ public class DataParserService {
                 System.err.println("Error: " + e.getMessage());
             }
         }
-        
+
         return dataList;
     }
-    
+
     public CollegeCourseData parseDataLine(String line) {
         String[] parts = line.split("::", -1);
-        
+
         if (parts.length < 12) {
             System.err.println("Invalid line format (expected at least 12 parts): " + line);
             return null;
         }
-        
+
         try {
             CollegeCourseData data = new CollegeCourseData();
-            
+
             data.setCollegeCode(cleanString(parts[0]));
             data.setCollegeName(cleanString(parts[1]));
             data.setDistrict(extractDistrict(cleanString(parts[1])));
@@ -64,11 +65,11 @@ public class DataParserService {
             data.setCutOffMBCV(parseBigDecimal(parts[9]));
             data.setCutOffSC(parseBigDecimal(parts[10]));
             data.setCutOffST(parseBigDecimal(parts[11]));
-            
+
             if (parts.length > 12) {
                 data.setCutOffSCA(parseBigDecimal(parts[12]));
             }
-            
+
             return data;
         } catch (Exception e) {
             System.err.println("Error parsing data line: " + line);
@@ -77,12 +78,16 @@ public class DataParserService {
         }
     }
 
-    private String extractDistrict(String collegeName) {
+    public String extractDistrict(String collegeName) {
         // Remove any trailing punctuation or numbers
         collegeName = collegeName.replaceAll("[.,-][^\\w]*$", "");
 
-        // Check if the college name contains a word that is followed by "Taluk & District" or "Taluk and District" or "(Tk & Dt)" or "(DT)" or "(Dist)" or "Distict" or "District" or "Dt." or "Dist"
-        Pattern pattern = Pattern.compile("(\\w+)\\s*(?:Taluk\\s*(?:&|and)\\s*District|\\(Tk\\s*&\\s*Dt\\)|\\(DT\\)|\\(Dist\\)|Distict|District|Dt\\.|Dist)", Pattern.CASE_INSENSITIVE);
+        // Check if the college name contains a word that is followed by "Taluk &
+        // District" or "Taluk and District" or "(Tk & Dt)" or "(DT)" or "(Dist)" or
+        // "Distict" or "District" or "Dt." or "Dist"
+        Pattern pattern = Pattern.compile(
+                "(\\w+)\\s*(?:Taluk\\s*(?:&|and)\\s*District|\\(Tk\\s*&\\s*Dt\\)|\\(DT\\)|\\(Dist\\)|Distict|District|Dt\\.|Dist)",
+                Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(collegeName);
         if (matcher.find()) {
             return matcher.group(1);
@@ -113,7 +118,7 @@ public class DataParserService {
     private String cleanString(String str) {
         return str != null ? str.trim() : null;
     }
-    
+
     private Integer parseInteger(String str) {
         if (str == null || str.trim().isEmpty() || "0".equals(str.trim())) {
             return null;
@@ -124,7 +129,7 @@ public class DataParserService {
             return null;
         }
     }
-    
+
     private BigDecimal parseBigDecimal(String str) {
         if (str == null || str.trim().isEmpty() || "***".equals(str.trim())) {
             return BigDecimal.valueOf(80);
