@@ -1,6 +1,6 @@
 package com.aahzi.collegedata.config;
 
-import com.aahzi.collegedata.service.CollegeCourseDataService;
+import com.aahzi.collegedata.service.CutOffDataYearlyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class DataLoader implements CommandLineRunner {
     
     @Autowired
-    private CollegeCourseDataService dataService;
+    private CutOffDataYearlyService dataService;
     
     @Value("${app.data.import-on-startup:true}")
     private boolean importOnStartup;

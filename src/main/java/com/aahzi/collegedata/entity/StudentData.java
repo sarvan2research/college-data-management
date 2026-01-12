@@ -6,11 +6,8 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "student_data")
-public class StudentData {
+public class StudentData extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     @Column(name = "student_name")
     private String name;
     @Column(name = "mobile_number")
@@ -31,7 +28,8 @@ public class StudentData {
     public StudentData() {
     }
 
-    public StudentData(Long id, String name, String mobileNumber, String community, String course, String district, BigDecimal maths, BigDecimal chemistry, BigDecimal physics) {
+    public StudentData(Long id, String name, String mobileNumber, String community, String course, String district,
+            BigDecimal maths, BigDecimal chemistry, BigDecimal physics) {
         this.id = id;
         this.name = name;
         this.mobileNumber = mobileNumber;
@@ -41,14 +39,6 @@ public class StudentData {
         this.maths = maths;
         this.chemistry = chemistry;
         this.physics = physics;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

@@ -2,13 +2,10 @@ package com.aahzi.collegedata.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-@Entity
-@Table(name = "college_course_data")
-public class CollegeCourseData {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Entity
+@Table(name = "CutOffDataYearly")
+public class CutOffDataYearly extends BaseEntity {
 
     @Column(name = "college_code")
     private String collegeCode;
@@ -56,13 +53,14 @@ public class CollegeCourseData {
     private BigDecimal cutOffSCA;
 
     // Constructors
-    public CollegeCourseData() {}
+    public CutOffDataYearly() {
+    }
 
-    public CollegeCourseData(String collegeCode, String collegeName, String courseCode,
-                             String courseName, Integer admissionYear, BigDecimal cutOffOC,
-                             BigDecimal cutOffBC, BigDecimal cutOffBCM, BigDecimal cutOffMBC,
-                             BigDecimal cutOffMBCDNC, BigDecimal cutOffMBCV, BigDecimal cutOffSC,
-                             BigDecimal cutOffST, BigDecimal cutOffSCA) {
+    public CutOffDataYearly(String collegeCode, String collegeName, String courseCode,
+                            String courseName, Integer admissionYear, BigDecimal cutOffOC,
+                            BigDecimal cutOffBC, BigDecimal cutOffBCM, BigDecimal cutOffMBC,
+                            BigDecimal cutOffMBCDNC, BigDecimal cutOffMBCV, BigDecimal cutOffSC,
+                            BigDecimal cutOffST, BigDecimal cutOffSCA) {
         this.collegeCode = collegeCode;
         this.collegeName = collegeName;
         this.courseCode = courseCode;
@@ -80,54 +78,123 @@ public class CollegeCourseData {
     }
 
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
-    public String getCollegeCode() { return collegeCode; }
-    public void setCollegeCode(String collegeCode) { this.collegeCode = collegeCode; }
+    public String getCollegeCode() {
+        return collegeCode;
+    }
 
-    public String getCollegeName() { return collegeName; }
-    public void setCollegeName(String collegeName) { this.collegeName = collegeName; }
+    public void setCollegeCode(String collegeCode) {
+        this.collegeCode = collegeCode;
+    }
 
-    public String getCourseCode() { return courseCode; }
-    public void setCourseCode(String courseCode) { this.courseCode = courseCode; }
+    public String getCollegeName() {
+        return collegeName;
+    }
 
-    public String getCourseName() { return courseName; }
-    public void setCourseName(String courseName) { this.courseName = courseName; }
+    public void setCollegeName(String collegeName) {
+        this.collegeName = collegeName;
+    }
 
-    public Integer getAdmissionYear() { return admissionYear; }
-    public void setAdmissionYear(Integer admissionYear) { this.admissionYear = admissionYear; }
+    public String getCourseCode() {
+        return courseCode;
+    }
 
-    public BigDecimal getCutOffOC() { return cutOffOC; }
-    public void setCutOffOC(BigDecimal cutOffOC) { this.cutOffOC = cutOffOC; }
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
 
-    public BigDecimal getCutOffBC() { return cutOffBC; }
-    public void setCutOffBC(BigDecimal cutOffBC) { this.cutOffBC = cutOffBC; }
+    public String getCourseName() {
+        return courseName;
+    }
 
-    public BigDecimal getCutOffBCM() { return cutOffBCM; }
-    public void setCutOffBCM(BigDecimal cutOffBCM) { this.cutOffBCM = cutOffBCM; }
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
 
-    public BigDecimal getCutOffMBC() { return cutOffMBC; }
-    public void setCutOffMBC(BigDecimal cutOffMBC) { this.cutOffMBC = cutOffMBC; }
+    public Integer getAdmissionYear() {
+        return admissionYear;
+    }
 
-    public BigDecimal getCutOffMBCDNC() { return cutOffMBCDNC; }
-    public void setCutOffMBCDNC(BigDecimal cutOffMBCDNC) { this.cutOffMBCDNC = cutOffMBCDNC; }
+    public void setAdmissionYear(Integer admissionYear) {
+        this.admissionYear = admissionYear;
+    }
 
-    public BigDecimal getCutOffMBCV() { return cutOffMBCV; }
-    public void setCutOffMBCV(BigDecimal cutOffMBCV) { this.cutOffMBCV = cutOffMBCV; }
+    public BigDecimal getCutOffOC() {
+        return cutOffOC;
+    }
 
-    public BigDecimal getCutOffSC() { return cutOffSC; }
-    public void setCutOffSC(BigDecimal cutOffSC) { this.cutOffSC = cutOffSC; }
+    public void setCutOffOC(BigDecimal cutOffOC) {
+        this.cutOffOC = cutOffOC;
+    }
 
-    public BigDecimal getCutOffST() { return cutOffST; }
-    public void setCutOffST(BigDecimal cutOffST) { this.cutOffST = cutOffST; }
+    public BigDecimal getCutOffBC() {
+        return cutOffBC;
+    }
 
-    public BigDecimal getCutOffSCA() { return cutOffSCA; }
-    public void setCutOffSCA(BigDecimal cutOffSCA) { this.cutOffSCA = cutOffSCA; }
+    public void setCutOffBC(BigDecimal cutOffBC) {
+        this.cutOffBC = cutOffBC;
+    }
+
+    public BigDecimal getCutOffBCM() {
+        return cutOffBCM;
+    }
+
+    public void setCutOffBCM(BigDecimal cutOffBCM) {
+        this.cutOffBCM = cutOffBCM;
+    }
+
+    public BigDecimal getCutOffMBC() {
+        return cutOffMBC;
+    }
+
+    public void setCutOffMBC(BigDecimal cutOffMBC) {
+        this.cutOffMBC = cutOffMBC;
+    }
+
+    public BigDecimal getCutOffMBCDNC() {
+        return cutOffMBCDNC;
+    }
+
+    public void setCutOffMBCDNC(BigDecimal cutOffMBCDNC) {
+        this.cutOffMBCDNC = cutOffMBCDNC;
+    }
+
+    public BigDecimal getCutOffMBCV() {
+        return cutOffMBCV;
+    }
+
+    public void setCutOffMBCV(BigDecimal cutOffMBCV) {
+        this.cutOffMBCV = cutOffMBCV;
+    }
+
+    public BigDecimal getCutOffSC() {
+        return cutOffSC;
+    }
+
+    public void setCutOffSC(BigDecimal cutOffSC) {
+        this.cutOffSC = cutOffSC;
+    }
+
+    public BigDecimal getCutOffST() {
+        return cutOffST;
+    }
+
+    public void setCutOffST(BigDecimal cutOffST) {
+        this.cutOffST = cutOffST;
+    }
+
+    public BigDecimal getCutOffSCA() {
+        return cutOffSCA;
+    }
+
+    public void setCutOffSCA(BigDecimal cutOffSCA) {
+        this.cutOffSCA = cutOffSCA;
+    }
 
     public void setDistrict(String district) {
         this.district = district;
     }
+
     public String getDistrict() {
         return district;
     }
@@ -153,7 +220,5 @@ public class CollegeCourseData {
                 ", cutOffSCA=" + cutOffSCA +
                 '}';
     }
-
-
 
 }

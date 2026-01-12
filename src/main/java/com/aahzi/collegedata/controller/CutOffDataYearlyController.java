@@ -1,28 +1,26 @@
 package com.aahzi.collegedata.controller;
 
-import com.aahzi.collegedata.dto.CollegeCourseDataDTO;
-import com.aahzi.collegedata.entity.CollegeCourseData;
+import com.aahzi.collegedata.dto.CutOffDataYearlyDTO;
 import com.aahzi.collegedata.model.EligibleCollegeResponse;
 import com.aahzi.collegedata.model.ErrorResponse;
 import com.aahzi.collegedata.model.StudentEligibilityRequest;
-import com.aahzi.collegedata.service.CollegeCourseDataService;
+import com.aahzi.collegedata.service.CutOffDataYearlyService;
 import com.aahzi.collegedata.service.StudentDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/college-data")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173","https://aahzi.com"})
-public class CollegeCourseDataController {
-    
+@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5173", "https://aahzi.com" })
+public class CutOffDataYearlyController {
+
     @Autowired
-    private CollegeCourseDataService dataService;
+    private CutOffDataYearlyService dataService;
 
     @Autowired
     private StudentDataService studentDataService;
@@ -30,7 +28,7 @@ public class CollegeCourseDataController {
     @PostMapping("/import")
     public ResponseEntity<ImportResponse> importData(@RequestBody ImportRequest request) {
         try {
-            List<CollegeCourseDataDTO> importedData = dataService.importRawData(request.getRawData());
+            List<CutOffDataYearlyDTO> importedData = dataService.importRawData(request.getRawData(), 2024);
             ImportResponse response = new ImportResponse();
             response.setMessage("Data imported successfully");
             response.setRecordsImported(importedData.size());
@@ -47,7 +45,7 @@ public class CollegeCourseDataController {
     @PostMapping("/importFile")
     public ResponseEntity<ImportResponse> importData(@RequestParam("file") MultipartFile file) {
         try {
-            List<CollegeCourseDataDTO> importedData =  dataService.importFromFile(file);
+            List<CutOffDataYearlyDTO> importedData = dataService.importFromFile(file);
             ImportResponse response = new ImportResponse();
             response.setMessage("Data imported successfully");
             response.setRecordsImported(importedData.size());
@@ -61,64 +59,62 @@ public class CollegeCourseDataController {
         }
     }
 
-
-    
     @GetMapping("/all")
-    public ResponseEntity<List<CollegeCourseDataDTO>> getAllData() {
-        List<CollegeCourseDataDTO> data = dataService.getAllData();
+    public ResponseEntity<List<CutOffDataYearlyDTO>> getAllData() {
+        List<CutOffDataYearlyDTO> data = dataService.getAllData();
         return ResponseEntity.ok(data);
     }
-    
+
     @GetMapping("/college/{code}")
-    public ResponseEntity<List<CollegeCourseDataDTO>> getDataByCollegeCode(@PathVariable String code) {
-        List<CollegeCourseDataDTO> data = dataService.getDataByCollegeCode(code);
+    public ResponseEntity<List<CutOffDataYearlyDTO>> getDataByCollegeCode(@PathVariable String code) {
+        List<CutOffDataYearlyDTO> data = dataService.getDataByCollegeCode(code);
         return ResponseEntity.ok(data);
     }
-    
+
     @GetMapping("/year/{year}")
-    public ResponseEntity<List<CollegeCourseDataDTO>> getDataByYear(@PathVariable Integer year) {
-        List<CollegeCourseDataDTO> data = dataService.getDataByYear(year);
+    public ResponseEntity<List<CutOffDataYearlyDTO>> getDataByYear(@PathVariable Integer year) {
+        List<CutOffDataYearlyDTO> data = dataService.getDataByYear(year);
         return ResponseEntity.ok(data);
     }
-    
+
     @GetMapping("/college/{code}/year/{year}")
-    public ResponseEntity<List<CollegeCourseDataDTO>> getDataByCollegeCodeAndYear(
+    public ResponseEntity<List<CutOffDataYearlyDTO>> getDataByCollegeCodeAndYear(
             @PathVariable String code, @PathVariable Integer year) {
-        List<CollegeCourseDataDTO> data = dataService.getDataByCollegeCodeAndYear(code, year);
+        List<CutOffDataYearlyDTO> data = dataService.getDataByCollegeCodeAndYear(code, year);
         return ResponseEntity.ok(data);
     }
-    
+
     @GetMapping("/colleges")
     public ResponseEntity<List<String>> getDistinctCollegeCodes() {
         List<String> codes = dataService.getDistinctCollegeCodes();
         return ResponseEntity.ok(codes);
     }
-    
+
     @GetMapping("/years")
     public ResponseEntity<List<Integer>> getDistinctYears() {
         List<Integer> years = dataService.getDistinctYears();
         return ResponseEntity.ok(years);
     }
-    
+
     @GetMapping("/search/college")
-    public ResponseEntity<List<CollegeCourseDataDTO>> searchByCollegeName(@RequestParam String name) {
-        List<CollegeCourseDataDTO> data = dataService.searchByCollegeName(name);
+    public ResponseEntity<List<CutOffDataYearlyDTO>> searchByCollegeName(@RequestParam String name) {
+        List<CutOffDataYearlyDTO> data = dataService.searchByCollegeName(name);
         return ResponseEntity.ok(data);
     }
-    
+
     @GetMapping("/search/course")
-    public ResponseEntity<List<CollegeCourseDataDTO>> searchByCourseName(@RequestParam String name) {
-        List<CollegeCourseDataDTO> data = dataService.searchByCourseName(name);
+    public ResponseEntity<List<CutOffDataYearlyDTO>> searchByCourseName(@RequestParam String name) {
+        List<CutOffDataYearlyDTO> data = dataService.searchByCourseName(name);
         return ResponseEntity.ok(data);
     }
-    
+
     @GetMapping("/{id}")
-    public ResponseEntity<CollegeCourseDataDTO> getDataById(@PathVariable Long id) {
-        Optional<CollegeCourseDataDTO> data = dataService.getDataById(id);
+    public ResponseEntity<CutOffDataYearlyDTO> getDataById(@PathVariable Long id) {
+        Optional<CutOffDataYearlyDTO> data = dataService.getDataById(id);
         return data.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    
+
     @GetMapping("/count")
     public ResponseEntity<DataCountResponse> getDataCount() {
         long count = dataService.getDataCount();
@@ -126,7 +122,7 @@ public class CollegeCourseDataController {
         response.setTotalRecords(count);
         return ResponseEntity.ok(response);
     }
-    
+
     @PostMapping("/reload")
     public ResponseEntity<ImportResponse> reloadDataFromFile() {
         try {
@@ -144,7 +140,6 @@ public class CollegeCourseDataController {
         }
     }
 
-
     @PostMapping("/eligible-colleges")
     public ResponseEntity<?> getEligibleColleges(@RequestBody StudentEligibilityRequest request) {
         try {
@@ -154,8 +149,6 @@ public class CollegeCourseDataController {
             throw new CustomException("Error fetching eligible colleges: " + e.getMessage());
         }
     }
-
-
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
@@ -169,35 +162,58 @@ public class CollegeCourseDataController {
         }
     }
 
-
-
     // Request/Response classes
     public static class ImportRequest {
         private String rawData;
-        
-        public String getRawData() { return rawData; }
-        public void setRawData(String rawData) { this.rawData = rawData; }
+
+        public String getRawData() {
+            return rawData;
+        }
+
+        public void setRawData(String rawData) {
+            this.rawData = rawData;
+        }
     }
-    
+
     public static class ImportResponse {
         private String message;
         private int recordsImported;
-        private List<CollegeCourseDataDTO> data;
-        
-        public String getMessage() { return message; }
-        public void setMessage(String message) { this.message = message; }
-        
-        public int getRecordsImported() { return recordsImported; }
-        public void setRecordsImported(int recordsImported) { this.recordsImported = recordsImported; }
-        
-        public List<CollegeCourseDataDTO> getData() { return data; }
-        public void setData(List<CollegeCourseDataDTO> data) { this.data = data; }
+        private List<CutOffDataYearlyDTO> data;
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public int getRecordsImported() {
+            return recordsImported;
+        }
+
+        public void setRecordsImported(int recordsImported) {
+            this.recordsImported = recordsImported;
+        }
+
+        public List<CutOffDataYearlyDTO> getData() {
+            return data;
+        }
+
+        public void setData(List<CutOffDataYearlyDTO> data) {
+            this.data = data;
+        }
     }
-    
+
     public static class DataCountResponse {
         private long totalRecords;
-        
-        public long getTotalRecords() { return totalRecords; }
-        public void setTotalRecords(long totalRecords) { this.totalRecords = totalRecords; }
+
+        public long getTotalRecords() {
+            return totalRecords;
+        }
+
+        public void setTotalRecords(long totalRecords) {
+            this.totalRecords = totalRecords;
+        }
     }
 }

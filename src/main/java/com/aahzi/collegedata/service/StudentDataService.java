@@ -1,10 +1,10 @@
 package com.aahzi.collegedata.service;
 
-import com.aahzi.collegedata.entity.CollegeCourseData;
+import com.aahzi.collegedata.entity.CutOffDataYearly;
 import com.aahzi.collegedata.entity.StudentData;
 import com.aahzi.collegedata.model.EligibleCollegeResponse;
 import com.aahzi.collegedata.model.StudentEligibilityRequest;
-import com.aahzi.collegedata.repository.CollegeCourseDataRepository;
+import com.aahzi.collegedata.repository.CutOffDataYearlyRepository;
 import com.aahzi.collegedata.repository.StudentDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class StudentDataService {
     private StudentDataRepository studentDataRepository;
 
     @Autowired
-    private CollegeCourseDataRepository collegeCourseDataRepository;
+    private CutOffDataYearlyRepository cutOffDataYearlyRepository;
 
     @Autowired
     private StudentDataPersistenceService studentDataPersistenceService;
@@ -41,7 +41,7 @@ public class StudentDataService {
     }
 
     private List<EligibleCollegeResponse> getEligibleCollegesRecursive(StudentData studentData, String courseCode, BigDecimal maxCutOff, BigDecimal minCutOff) {
-        List<CollegeCourseData> eligibleColleges = collegeCourseDataRepository.findEligibleCollegesWithCutoffRange(
+        List<CutOffDataYearly> eligibleColleges = cutOffDataYearlyRepository.findEligibleCollegesWithCutoffRange(
                 studentData.getCommunity(),
                 courseCode,
                 studentData.getDistrict(),
@@ -60,9 +60,9 @@ public class StudentDataService {
         return (studentData.getPhysics().add(studentData.getChemistry()).divide(BigDecimal.valueOf(2))).add(studentData.getMaths());
     }
 
-    private static List<EligibleCollegeResponse> getEligibleCollegeResponses(List<CollegeCourseData> eligibleColleges) {
+    private static List<EligibleCollegeResponse> getEligibleCollegeResponses(List<CutOffDataYearly> eligibleColleges) {
         List<EligibleCollegeResponse> response = new ArrayList<>();
-        for (CollegeCourseData college : eligibleColleges) {
+        for (CutOffDataYearly college : eligibleColleges) {
             EligibleCollegeResponse eligibleCollegeResponse = new EligibleCollegeResponse();
             eligibleCollegeResponse.setCollegeName(college.getCollegeName());
             eligibleCollegeResponse.setCollegeCode(college.getCollegeCode());

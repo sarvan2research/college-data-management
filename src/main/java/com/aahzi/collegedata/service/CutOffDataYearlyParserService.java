@@ -1,20 +1,19 @@
 package com.aahzi.collegedata.service;
 
-import com.aahzi.collegedata.entity.CollegeCourseData;
+import com.aahzi.collegedata.entity.CutOffDataYearly;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class DataParserService {
+public class CutOffDataYearlyParserService {
 
-    public List<CollegeCourseData> parseRawData(String rawData) {
-        List<CollegeCourseData> dataList = new ArrayList<>();
+    public List<CutOffDataYearly> parseRawData(String rawData, Integer admissionYear) {
+        List<CutOffDataYearly> dataList = new ArrayList<>();
 
         if (rawData == null || rawData.trim().isEmpty()) {
             return dataList;
@@ -27,7 +26,7 @@ public class DataParserService {
                 continue;
 
             try {
-                CollegeCourseData data = parseDataLine(line);
+                CutOffDataYearly data = parseDataLine(line, admissionYear);
                 if (data != null) {
                     dataList.add(data);
                 }
@@ -40,7 +39,7 @@ public class DataParserService {
         return dataList;
     }
 
-    public CollegeCourseData parseDataLine(String line) {
+    public CutOffDataYearly parseDataLine(String line, Integer admissionYear) {
         String[] parts = line.split("::", -1);
 
         if (parts.length < 12) {
@@ -49,14 +48,14 @@ public class DataParserService {
         }
 
         try {
-            CollegeCourseData data = new CollegeCourseData();
+            CutOffDataYearly data = new CutOffDataYearly();
 
             data.setCollegeCode(cleanString(parts[0]));
             data.setCollegeName(cleanString(parts[1]));
             data.setDistrict(extractDistrict(cleanString(parts[1])));
             data.setCourseCode(cleanString(parts[2]));
             data.setCourseName(cleanString(parts[3]).toUpperCase());
-            data.setAdmissionYear(2024);
+            data.setAdmissionYear(admissionYear);
             data.setCutOffOC(parseBigDecimal(parts[4]));
             data.setCutOffBC(parseBigDecimal(parts[5]));
             data.setCutOffBCM(parseBigDecimal(parts[6]));

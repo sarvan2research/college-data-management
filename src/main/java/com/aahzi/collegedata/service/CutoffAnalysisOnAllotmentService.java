@@ -1,0 +1,146 @@
+package com.aahzi.collegedata.service;
+
+import com.aahzi.collegedata.dto.CollegeImportDTO;
+import com.aahzi.collegedata.dto.CommunityImportDTO;
+import com.aahzi.collegedata.dto.CourseImportDTO;
+import com.aahzi.collegedata.dto.CutoffStatsDTO;
+import com.aahzi.collegedata.entity.CollegeCutoff;
+import com.aahzi.collegedata.entity.CommunityCutoff;
+import com.aahzi.collegedata.entity.CourseCutoff;
+import com.aahzi.collegedata.entity.CutoffStats;
+import com.aahzi.collegedata.model.CutoffSearchResult;
+import com.aahzi.collegedata.repository.CollegeCutoffRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+public class CutoffAnalysisOnAllotmentService {
+
+    private final CollegeCutoffRepository repository;
+    private final ObjectMapper objectMapper;
+
+    public CutoffAnalysisOnAllotmentService(CollegeCutoffRepository repository) {
+        this.repository = repository;
+        this.objectMapper = new ObjectMapper();
+    }
+
+    public void loadDataFromResource(String resourcePath) {
+        try {
+            ClassPathResource resource = new ClassPathResource(resourcePath);
+            if (!resource.exists()) {
+                System.out.println("Cutoff Analysis data resource not found: " + resourcePath);
+                return;
+            }
+
+            var node = objectMapper.readTree(resource.getInputStream());
+            List<CollegeImportDTO> dtos = new ArrayList<>();
+            if (node.isArray()) {
+                dtos = Arrays.asList(objectMapper.treeToValue(node, CollegeImportDTO[].class));
+            } else {
+                dtos.add(objectMapper.treeToValue(node, CollegeImportDTO.class));
+            }
+
+            processImports(dtos);
+            System.out.println("Loaded " + dtos.size() + " college cutoff records from " + resourcePath);
+
+        } catch (IOException e) {
+            System.err.println("Error loading cutoff data: " + e.getMessage());
+        }
+    }
+
+    private void processImports(List<CollegeImportDTO> imports) {
+        List<CollegeCutoff> entities = imports.stream()
+                .map(this::mapToEntity)
+                .collect(Collectors.toList());
+        repository.saveAll(entities);
+    }
+
+    public CollegeCutoff saveCutoffData(CollegeCutoff entity) {
+        return repository.save(entity);
+    }
+
+    public CutoffSearchResult getCutoff(String collegeCode, String courseCode, String community) {
+        Optional<CollegeCutoff> collegeOpt = repository.findByCollegeCode(collegeCode);
+
+        if (collegeOpt.isEmpty()) {
+            throw new RuntimeException("College not found with code: " + collegeCode);
+        }
+
+        CollegeCutoff college = collegeOpt.get();
+
+        CourseCutoff course = college.getCourseWiseCutoff().stream()
+                .filter(c -> c.getBranchCode().equalsIgnoreCase(courseCode))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Course not found with code: " + courseCode));
+
+        CommunityCutoff communityCutoff = course.getCommunityWiseCutoff().stream()
+                .filter(c -> c.getCommunity().equalsIgnoreCase(community))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Community not found: " + community));
+
+        return new CutoffSearchResult(
+                college.getCollegeCode(),
+                college.getCollegeName(),
+                course.getBranchCode(),
+                course.getBranchName(),
+                communityCutoff.getCommunity(),
+                communityCutoff.getCutoff());
+    }
+
+    private CollegeCutoff mapToEntity(CollegeImportDTO dto) {
+        CollegeCutoff college = new CollegeCutoff();
+        college.setCollegeCode(dto.getCollegeCode());
+        college.setCollegeName(dto.getCollegeName());
+        college.setGeneralCategoryCutoff(mapToEmbeddable(dto.getGeneralCategoryCutoff()));
+
+        if (dto.getCourseWiseCutoff() != null) {
+            List<CourseCutoff> courses = dto.getCourseWiseCutoff().stream()
+                    .map(this::mapToCourseEntity)
+                    .collect(Collectors.toList());
+            college.setCourseWiseCutoff(courses);
+        }
+        return college;
+    }
+
+    private CourseCutoff mapToCourseEntity(CourseImportDTO dto) {
+        CourseCutoff course = new CourseCutoff();
+        course.setBranchCode(dto.getBranchCode());
+        course.setBranchName(dto.getBranchName());
+        course.setOverallCutoff(mapToEmbeddable(dto.getOverallCutoff()));
+
+        if (dto.getCommunityWiseCutoff() != null) {
+            List<CommunityCutoff> communities = dto.getCommunityWiseCutoff().stream()
+                    .map(this::mapToCommunityEntity)
+                    .collect(Collectors.toList());
+            course.setCommunityWiseCutoff(communities);
+        }
+        return course;
+    }
+
+    private CommunityCutoff mapToCommunityEntity(CommunityImportDTO dto) {
+        CommunityCutoff community = new CommunityCutoff();
+        community.setCommunity(dto.getCommunity());
+        community.setCutoff(mapToEmbeddable(dto.getCutoff()));
+        return community;
+    }
+
+    private CutoffStats mapToEmbeddable(CutoffStatsDTO dto) {
+        if (dto == null)
+            return null;
+        CutoffStats stats = new CutoffStats();
+        stats.setMinMark(dto.getMinMark());
+        stats.setMaxMark(dto.getMaxMark());
+        stats.setMinRank(dto.getMinRank());
+        stats.setMaxRank(dto.getMaxRank());
+        stats.setTotalAdmissions(dto.getTotalAdmissions());
+        return stats;
+    }
+}

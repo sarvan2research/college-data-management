@@ -1,6 +1,6 @@
 package com.aahzi.collegedata.service;
 
-import com.aahzi.collegedata.entity.CollegeCourseData;
+import com.aahzi.collegedata.entity.CutOffDataYearly;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +22,7 @@ public class DataPersistenceService {
         this.objectMapper = new ObjectMapper();
     }
     
-    public void saveDataToFile(List<CollegeCourseData> data) {
+    public void saveDataToFile(List<CutOffDataYearly> data) {
         try {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(filePath), data);
             System.out.println("Data saved to file: " + filePath);
@@ -32,7 +32,7 @@ public class DataPersistenceService {
         }
     }
     
-    public List<CollegeCourseData> loadDataFromFile() {
+    public List<CutOffDataYearly> loadDataFromFile() {
         try {
             File file = new File(filePath);
             if (!file.exists()) {
@@ -40,7 +40,7 @@ public class DataPersistenceService {
                 return List.of();
             }
             
-            List<CollegeCourseData> data = objectMapper.readValue(file, new TypeReference<List<CollegeCourseData>>() {});
+            List<CutOffDataYearly> data = objectMapper.readValue(file, new TypeReference<List<CutOffDataYearly>>() {});
             System.out.println("Data loaded from file: " + filePath + " (" + data.size() + " records)");
             return data;
         } catch (IOException e) {

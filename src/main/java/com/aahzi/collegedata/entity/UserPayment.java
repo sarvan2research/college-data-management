@@ -4,11 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "user_payments")
-public class UserPayment {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+public class UserPayment extends BaseEntity {
 
 	private String name;
 	private String email;
@@ -37,14 +33,6 @@ public class UserPayment {
 		this.cardHolderName = cardHolderName;
 		this.expiry = expiry;
 		this.cvv = cvv;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getName() {

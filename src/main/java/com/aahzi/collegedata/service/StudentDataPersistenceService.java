@@ -1,6 +1,5 @@
 package com.aahzi.collegedata.service;
 
-import com.aahzi.collegedata.entity.CollegeCourseData;
 import com.aahzi.collegedata.entity.StudentData;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

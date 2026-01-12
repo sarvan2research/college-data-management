@@ -23,6 +23,13 @@ app:
   student:
     file-path: /tmp/student-data.json
     import-on-startup: true
+  cutoff:
+    #file-path: data/cutoff_analysis.json
+    file-path: ./dataOnLoad/CutoffanalysisBasedOnAllotment2025.json
+    import-on-startup: true
+  college-details:
+    file-path: ./dataOnLoad/CollegeDetails.json
+    import-on-startup: true
 
 server:
   port: 8080

@@ -2,7 +2,7 @@ package com.aahzi.collegedata.dto;
 
 import java.math.BigDecimal;
 
-public class CollegeCourseDataDTO {
+public class CutOffDataYearlyDTO {
     private Long id;
     private String collegeCode;
     private String collegeName;
@@ -20,7 +20,7 @@ public class CollegeCourseDataDTO {
     private BigDecimal cutOffSCA;
 
     // Constructors
-    public CollegeCourseDataDTO() {}
+    public CutOffDataYearlyDTO() {}
 
     // Getters and Setters (same as entity)
     public Long getId() { return id; }

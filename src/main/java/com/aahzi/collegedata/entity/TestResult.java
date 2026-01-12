@@ -4,11 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "test_results")
-public class TestResult {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class TestResult extends BaseEntity {
 
     private String studentId;
     private String name;
@@ -40,14 +36,6 @@ public class TestResult {
         this.subjectInterest = subjectInterest;
         this.personalityTotal = personalityTotal;
         this.subjectTotal = subjectTotal;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getStudentId() {
