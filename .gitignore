@@ -4,6 +4,7 @@
 # Ignore IDE files
 .idea/
 *.iml
+.vscode/
 
 # Ignore Maven or Gradle build directories
 target/
