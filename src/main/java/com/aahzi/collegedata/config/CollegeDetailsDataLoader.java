@@ -1,11 +1,13 @@
 package com.aahzi.collegedata.config;
 
 import com.aahzi.collegedata.service.CollegeDetailsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class CollegeDetailsDataLoader implements CommandLineRunner {
 
@@ -25,9 +27,9 @@ public class CollegeDetailsDataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (importOnStartup) {
-            System.out.println("Starting college details data import on startup...");
+            log.info("Starting college details data import on startup...");
             service.loadDataFromResource(dataFilePath);
-            System.out.println("College details data import process completed.");
+            log.info("College details data import process completed.");
         }
     }
 }

@@ -1,11 +1,12 @@
 package com.aahzi.collegedata.service;
 
-import com.aahzi.collegedata.entity.CutOffDataYearly;
+import com.aahzi.collegedata.entity.AdmissionDataYearly;
 import com.aahzi.collegedata.entity.StudentData;
 import com.aahzi.collegedata.model.EligibleCollegeResponse;
 import com.aahzi.collegedata.model.StudentEligibilityRequest;
-import com.aahzi.collegedata.repository.CutOffDataYearlyRepository;
+import com.aahzi.collegedata.repository.AdmissionDataYearlyRepository;
 import com.aahzi.collegedata.repository.StudentDataRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Service
 public class StudentDataService {
 
@@ -21,7 +23,7 @@ public class StudentDataService {
     private StudentDataRepository studentDataRepository;
 
     @Autowired
-    private CutOffDataYearlyRepository cutOffDataYearlyRepository;
+    private AdmissionDataYearlyRepository admissionDataYearlyRepository;
 
     @Autowired
     private StudentDataPersistenceService studentDataPersistenceService;
@@ -32,22 +34,23 @@ public class StudentDataService {
     }
 
     public List<EligibleCollegeResponse> getEligibleColleges(StudentEligibilityRequest studentEligibilityRequest) {
-        System.out.println(studentEligibilityRequest);
+        log.debug("Processing eligibility request: {}", studentEligibilityRequest);
         StudentData studentData = saveStudentData(studentEligibilityRequest);
         BigDecimal cutoff = calculateCutoff(studentData);
         BigDecimal maxCutOff = cutoff.add(BigDecimal.valueOf(5));
         BigDecimal minCutOff = cutoff.subtract(BigDecimal.valueOf(5));
-        return getEligibleCollegesRecursive(studentData, studentEligibilityRequest.getCourseCode(), maxCutOff, minCutOff);
+        return getEligibleCollegesRecursive(studentData, studentEligibilityRequest.getCourseCode(), maxCutOff,
+                minCutOff);
     }
 
-    private List<EligibleCollegeResponse> getEligibleCollegesRecursive(StudentData studentData, String courseCode, BigDecimal maxCutOff, BigDecimal minCutOff) {
-        List<CutOffDataYearly> eligibleColleges = cutOffDataYearlyRepository.findEligibleCollegesWithCutoffRange(
+    private List<EligibleCollegeResponse> getEligibleCollegesRecursive(StudentData studentData, String courseCode,
+            BigDecimal maxCutOff, BigDecimal minCutOff) {
+        List<AdmissionDataYearly> eligibleColleges = admissionDataYearlyRepository.findEligibleCollegesWithCutoffRange(
                 studentData.getCommunity(),
                 courseCode,
                 studentData.getDistrict(),
                 minCutOff,
-                maxCutOff
-        );
+                maxCutOff);
         if (eligibleColleges.size() >= 10 || minCutOff.compareTo(BigDecimal.valueOf(80)) <= 0) {
             return getEligibleCollegeResponses(eligibleColleges);
         } else {
@@ -57,12 +60,14 @@ public class StudentDataService {
     }
 
     private BigDecimal calculateCutoff(StudentData studentData) {
-        return (studentData.getPhysics().add(studentData.getChemistry()).divide(BigDecimal.valueOf(2))).add(studentData.getMaths());
+        return (studentData.getPhysics().add(studentData.getChemistry()).divide(BigDecimal.valueOf(2)))
+                .add(studentData.getMaths());
     }
 
-    private static List<EligibleCollegeResponse> getEligibleCollegeResponses(List<CutOffDataYearly> eligibleColleges) {
+    private static List<EligibleCollegeResponse> getEligibleCollegeResponses(
+            List<AdmissionDataYearly> eligibleColleges) {
         List<EligibleCollegeResponse> response = new ArrayList<>();
-        for (CutOffDataYearly college : eligibleColleges) {
+        for (AdmissionDataYearly college : eligibleColleges) {
             EligibleCollegeResponse eligibleCollegeResponse = new EligibleCollegeResponse();
             eligibleCollegeResponse.setCollegeName(college.getCollegeName());
             eligibleCollegeResponse.setCollegeCode(college.getCollegeCode());
@@ -98,7 +103,7 @@ public class StudentDataService {
         if (!data.isEmpty()) {
             studentDataRepository.deleteAll();
             studentDataRepository.saveAll(data);
-            System.out.println("Student Data loaded from file to database: " + data.size() + " records");
+            log.info("Student Data loaded from file to database: {} records", data.size());
         }
     }
 

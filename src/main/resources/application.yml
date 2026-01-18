@@ -18,17 +18,22 @@ spring:
 
 app:
   data:
-    file-path: /tmp/college-data.json
-    import-on-startup: true
+    #file-path: /tmp/college-data.json
+    file-path: ./dataOnLoad/college-data.json
+    import-on-startup: false
   student:
-    file-path: /tmp/student-data.json
+    #file-path: /tmp/student-data.json
+    file-path: ./dataOnLoad/student-data.json
+    import-on-startup: false
+  admission:
+    base-path: dataOnLoad/
     import-on-startup: true
-  cutoff:
+  cutoffAllotment:
     #file-path: data/cutoff_analysis.json
-    file-path: ./dataOnLoad/CutoffanalysisBasedOnAllotment2025.json
+    file-path: dataOnLoad/CutoffanalysisBasedOnAllotment2025.json
     import-on-startup: true
   college-details:
-    file-path: ./dataOnLoad/CollegeDetails.json
+    file-path: dataOnLoad/CollegeDetails.json
     import-on-startup: true
 
 server:
@@ -36,4 +41,9 @@ server:
 
 logging:
   level:
-    com.example: DEBUG
+    root: INFO
+    com.aahzi: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+  file:
+    name: logs/college-app.log

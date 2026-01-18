@@ -11,6 +11,7 @@ import com.aahzi.collegedata.entity.CutoffStats;
 import com.aahzi.collegedata.model.CutoffSearchResult;
 import com.aahzi.collegedata.repository.CollegeCutoffRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CutoffAnalysisOnAllotmentService {
 
@@ -36,23 +38,37 @@ public class CutoffAnalysisOnAllotmentService {
         try {
             ClassPathResource resource = new ClassPathResource(resourcePath);
             if (!resource.exists()) {
-                System.out.println("Cutoff Analysis data resource not found: " + resourcePath);
+                log.warn("Cutoff Analysis data resource not found: {}", resourcePath);
                 return;
             }
 
-            var node = objectMapper.readTree(resource.getInputStream());
+            var rootNode = objectMapper.readTree(resource.getInputStream());
             List<CollegeImportDTO> dtos = new ArrayList<>();
-            if (node.isArray()) {
-                dtos = Arrays.asList(objectMapper.treeToValue(node, CollegeImportDTO[].class));
+
+            // Check if JSON has "colleges" wrapper
+            if (rootNode.has("colleges")) {
+                var collegesNode = rootNode.get("colleges");
+                if (collegesNode.isArray()) {
+                    dtos = Arrays.asList(objectMapper.treeToValue(collegesNode, CollegeImportDTO[].class));
+                }
+            } else if (rootNode.isArray()) {
+                // Direct array of colleges
+                dtos = Arrays.asList(objectMapper.treeToValue(rootNode, CollegeImportDTO[].class));
             } else {
-                dtos.add(objectMapper.treeToValue(node, CollegeImportDTO.class));
+                // Single college object
+                dtos.add(objectMapper.treeToValue(rootNode, CollegeImportDTO.class));
+            }
+
+            if (dtos.isEmpty()) {
+                log.warn("No college cutoff data found in {}", resourcePath);
+                return;
             }
 
             processImports(dtos);
-            System.out.println("Loaded " + dtos.size() + " college cutoff records from " + resourcePath);
+            log.info("Loaded {} college cutoff records from {}", dtos.size(), resourcePath);
 
         } catch (IOException e) {
-            System.err.println("Error loading cutoff data: " + e.getMessage());
+            log.error("Error loading cutoff data from {}: {}", resourcePath, e.getMessage(), e);
         }
     }
 

@@ -10,6 +10,7 @@ import com.aahzi.collegedata.entity.CourseDetails;
 import com.aahzi.collegedata.entity.HostelDetails;
 import com.aahzi.collegedata.repository.CollegeDetailsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CollegeDetailsService {
 
@@ -34,7 +36,7 @@ public class CollegeDetailsService {
         try {
             ClassPathResource resource = new ClassPathResource(resourcePath);
             if (!resource.exists()) {
-                System.out.println("College Details data resource not found: " + resourcePath);
+                log.warn("College Details data resource not found: {}", resourcePath);
                 return;
             }
 
@@ -42,12 +44,12 @@ public class CollegeDetailsService {
                 CollegeRootDTO rootDTO = objectMapper.readValue(inputStream, CollegeRootDTO.class);
                 if (rootDTO != null && rootDTO.getColleges() != null) {
                     processImports(rootDTO.getColleges());
-                    System.out.println(
-                            "Loaded " + rootDTO.getColleges().size() + " college details records from " + resourcePath);
+                    log.info("Loaded {} college details records from {}",
+                            rootDTO.getColleges().size(), resourcePath);
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error loading college details data: " + e.getMessage());
+            log.error("Error loading college details data from {}: {}", resourcePath, e.getMessage(), e);
         }
     }
 

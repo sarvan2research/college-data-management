@@ -2,8 +2,16 @@ package com.aahzi.collegedata.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CutoffStatsDTO {
     @JsonProperty("min_mark")
     private Double minMark;
@@ -15,44 +23,4 @@ public class CutoffStatsDTO {
     private Integer maxRank;
     @JsonProperty("total_admissions")
     private Integer totalAdmissions;
-
-    public Double getMinMark() {
-        return minMark;
-    }
-
-    public void setMinMark(Double minMark) {
-        this.minMark = minMark;
-    }
-
-    public Double getMaxMark() {
-        return maxMark;
-    }
-
-    public void setMaxMark(Double maxMark) {
-        this.maxMark = maxMark;
-    }
-
-    public Integer getMinRank() {
-        return minRank;
-    }
-
-    public void setMinRank(Integer minRank) {
-        this.minRank = minRank;
-    }
-
-    public Integer getMaxRank() {
-        return maxRank;
-    }
-
-    public void setMaxRank(Integer maxRank) {
-        this.maxRank = maxRank;
-    }
-
-    public Integer getTotalAdmissions() {
-        return totalAdmissions;
-    }
-
-    public void setTotalAdmissions(Integer totalAdmissions) {
-        this.totalAdmissions = totalAdmissions;
-    }
 }

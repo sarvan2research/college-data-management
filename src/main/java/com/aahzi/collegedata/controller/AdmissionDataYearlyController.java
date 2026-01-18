@@ -1,10 +1,10 @@
 package com.aahzi.collegedata.controller;
 
-import com.aahzi.collegedata.dto.CutOffDataYearlyDTO;
+import com.aahzi.collegedata.dto.AdmissionDataYearlyDTO;
 import com.aahzi.collegedata.model.EligibleCollegeResponse;
 import com.aahzi.collegedata.model.ErrorResponse;
 import com.aahzi.collegedata.model.StudentEligibilityRequest;
-import com.aahzi.collegedata.service.CutOffDataYearlyService;
+import com.aahzi.collegedata.service.AdmissionDataYearlyService;
 import com.aahzi.collegedata.service.StudentDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +17,10 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/college-data")
 @CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5173", "https://aahzi.com" })
-public class CutOffDataYearlyController {
+public class AdmissionDataYearlyController {
 
     @Autowired
-    private CutOffDataYearlyService dataService;
+    private AdmissionDataYearlyService dataService;
 
     @Autowired
     private StudentDataService studentDataService;
@@ -28,7 +28,7 @@ public class CutOffDataYearlyController {
     @PostMapping("/import")
     public ResponseEntity<ImportResponse> importData(@RequestBody ImportRequest request) {
         try {
-            List<CutOffDataYearlyDTO> importedData = dataService.importRawData(request.getRawData(), 2024);
+            List<AdmissionDataYearlyDTO> importedData = dataService.importRawData(request.getRawData(), 2024);
             ImportResponse response = new ImportResponse();
             response.setMessage("Data imported successfully");
             response.setRecordsImported(importedData.size());
@@ -45,7 +45,7 @@ public class CutOffDataYearlyController {
     @PostMapping("/importFile")
     public ResponseEntity<ImportResponse> importData(@RequestParam("file") MultipartFile file) {
         try {
-            List<CutOffDataYearlyDTO> importedData = dataService.importFromFile(file);
+            List<AdmissionDataYearlyDTO> importedData = dataService.importFromFile(file);
             ImportResponse response = new ImportResponse();
             response.setMessage("Data imported successfully");
             response.setRecordsImported(importedData.size());
@@ -60,27 +60,27 @@ public class CutOffDataYearlyController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<CutOffDataYearlyDTO>> getAllData() {
-        List<CutOffDataYearlyDTO> data = dataService.getAllData();
+    public ResponseEntity<List<AdmissionDataYearlyDTO>> getAllData() {
+        List<AdmissionDataYearlyDTO> data = dataService.getAllData();
         return ResponseEntity.ok(data);
     }
 
     @GetMapping("/college/{code}")
-    public ResponseEntity<List<CutOffDataYearlyDTO>> getDataByCollegeCode(@PathVariable String code) {
-        List<CutOffDataYearlyDTO> data = dataService.getDataByCollegeCode(code);
+    public ResponseEntity<List<AdmissionDataYearlyDTO>> getDataByCollegeCode(@PathVariable String code) {
+        List<AdmissionDataYearlyDTO> data = dataService.getDataByCollegeCode(code);
         return ResponseEntity.ok(data);
     }
 
     @GetMapping("/year/{year}")
-    public ResponseEntity<List<CutOffDataYearlyDTO>> getDataByYear(@PathVariable Integer year) {
-        List<CutOffDataYearlyDTO> data = dataService.getDataByYear(year);
+    public ResponseEntity<List<AdmissionDataYearlyDTO>> getDataByYear(@PathVariable Integer year) {
+        List<AdmissionDataYearlyDTO> data = dataService.getDataByYear(year);
         return ResponseEntity.ok(data);
     }
 
     @GetMapping("/college/{code}/year/{year}")
-    public ResponseEntity<List<CutOffDataYearlyDTO>> getDataByCollegeCodeAndYear(
+    public ResponseEntity<List<AdmissionDataYearlyDTO>> getDataByCollegeCodeAndYear(
             @PathVariable String code, @PathVariable Integer year) {
-        List<CutOffDataYearlyDTO> data = dataService.getDataByCollegeCodeAndYear(code, year);
+        List<AdmissionDataYearlyDTO> data = dataService.getDataByCollegeCodeAndYear(code, year);
         return ResponseEntity.ok(data);
     }
 
@@ -97,20 +97,20 @@ public class CutOffDataYearlyController {
     }
 
     @GetMapping("/search/college")
-    public ResponseEntity<List<CutOffDataYearlyDTO>> searchByCollegeName(@RequestParam String name) {
-        List<CutOffDataYearlyDTO> data = dataService.searchByCollegeName(name);
+    public ResponseEntity<List<AdmissionDataYearlyDTO>> searchByCollegeName(@RequestParam String name) {
+        List<AdmissionDataYearlyDTO> data = dataService.searchByCollegeName(name);
         return ResponseEntity.ok(data);
     }
 
     @GetMapping("/search/course")
-    public ResponseEntity<List<CutOffDataYearlyDTO>> searchByCourseName(@RequestParam String name) {
-        List<CutOffDataYearlyDTO> data = dataService.searchByCourseName(name);
+    public ResponseEntity<List<AdmissionDataYearlyDTO>> searchByCourseName(@RequestParam String name) {
+        List<AdmissionDataYearlyDTO> data = dataService.searchByCourseName(name);
         return ResponseEntity.ok(data);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CutOffDataYearlyDTO> getDataById(@PathVariable Long id) {
-        Optional<CutOffDataYearlyDTO> data = dataService.getDataById(id);
+    public ResponseEntity<AdmissionDataYearlyDTO> getDataById(@PathVariable Long id) {
+        Optional<AdmissionDataYearlyDTO> data = dataService.getDataById(id);
         return data.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -178,7 +178,7 @@ public class CutOffDataYearlyController {
     public static class ImportResponse {
         private String message;
         private int recordsImported;
-        private List<CutOffDataYearlyDTO> data;
+        private List<AdmissionDataYearlyDTO> data;
 
         public String getMessage() {
             return message;
@@ -196,11 +196,11 @@ public class CutOffDataYearlyController {
             this.recordsImported = recordsImported;
         }
 
-        public List<CutOffDataYearlyDTO> getData() {
+        public List<AdmissionDataYearlyDTO> getData() {
             return data;
         }
 
-        public void setData(List<CutOffDataYearlyDTO> data) {
+        public void setData(List<AdmissionDataYearlyDTO> data) {
             this.data = data;
         }
     }

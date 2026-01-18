@@ -1,6 +1,7 @@
 package com.aahzi.collegedata.service;
 
-import com.aahzi.collegedata.entity.CutOffDataYearly;
+import com.aahzi.collegedata.entity.AdmissionDataYearly;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -9,11 +10,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 @Service
-public class CutOffDataYearlyParserService {
+public class AdmissionDataYearlyParserService {
 
-    public List<CutOffDataYearly> parseRawData(String rawData, Integer admissionYear) {
-        List<CutOffDataYearly> dataList = new ArrayList<>();
+    public List<AdmissionDataYearly> parseRawData(String rawData, Integer admissionYear) {
+        List<AdmissionDataYearly> dataList = new ArrayList<>();
 
         if (rawData == null || rawData.trim().isEmpty()) {
             return dataList;
@@ -26,29 +28,28 @@ public class CutOffDataYearlyParserService {
                 continue;
 
             try {
-                CutOffDataYearly data = parseDataLine(line, admissionYear);
+                AdmissionDataYearly data = parseDataLine(line, admissionYear);
                 if (data != null) {
                     dataList.add(data);
                 }
             } catch (Exception e) {
-                System.err.println("Error parsing line: " + line);
-                System.err.println("Error: " + e.getMessage());
+                log.error("Error parsing line: {} - {}", line, e.getMessage());
             }
         }
 
         return dataList;
     }
 
-    public CutOffDataYearly parseDataLine(String line, Integer admissionYear) {
+    public AdmissionDataYearly parseDataLine(String line, Integer admissionYear) {
         String[] parts = line.split("::", -1);
 
         if (parts.length < 12) {
-            System.err.println("Invalid line format (expected at least 12 parts): " + line);
+            log.warn("Invalid line format (expected at least 12 parts): {}", line);
             return null;
         }
 
         try {
-            CutOffDataYearly data = new CutOffDataYearly();
+            AdmissionDataYearly data = new AdmissionDataYearly();
 
             data.setCollegeCode(cleanString(parts[0]));
             data.setCollegeName(cleanString(parts[1]));
@@ -71,8 +72,70 @@ public class CutOffDataYearlyParserService {
 
             return data;
         } catch (Exception e) {
-            System.err.println("Error parsing data line: " + line);
-            e.printStackTrace();
+            log.error("Error parsing data line: {} - {}", line, e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public List<AdmissionDataYearly> parseRankRawData(String rawData, Integer admissionYear) {
+        List<AdmissionDataYearly> dataList = new ArrayList<>();
+
+        if (rawData == null || rawData.trim().isEmpty()) {
+            return dataList;
+        }
+
+        String[] lines = rawData.split("\n");
+
+        for (String line : lines) {
+            if (line.trim().isEmpty())
+                continue;
+
+            try {
+                AdmissionDataYearly data = parseRankDataLine(line, admissionYear);
+                if (data != null) {
+                    dataList.add(data);
+                }
+            } catch (Exception e) {
+                log.error("Error parsing rank line: {} - {}", line, e.getMessage());
+            }
+        }
+
+        return dataList;
+    }
+
+    public AdmissionDataYearly parseRankDataLine(String line, Integer admissionYear) {
+        String[] parts = line.split("::", -1);
+
+        if (parts.length < 12) {
+            log.warn("Invalid rank line format (expected at least 12 parts): {}", line);
+            return null;
+        }
+
+        try {
+            AdmissionDataYearly data = new AdmissionDataYearly();
+
+            data.setCollegeCode(cleanString(parts[0]));
+            data.setCollegeName(cleanString(parts[1]));
+            data.setDistrict(extractDistrict(cleanString(parts[1])));
+            data.setCourseCode(cleanString(parts[2]));
+            data.setCourseName(cleanString(parts[3]).toUpperCase());
+            data.setAdmissionYear(admissionYear);
+            data.setRankOC(parseInteger(parts[4]));
+            data.setRankBC(parseInteger(parts[5]));
+            data.setRankBCM(parseInteger(parts[6]));
+            data.setRankMBC(parseInteger(parts[7]));
+            data.setRankMBCDNC(parseInteger(parts[8]));
+            data.setRankMBCV(parseInteger(parts[9]));
+            data.setRankSC(parseInteger(parts[10]));
+            data.setRankST(parseInteger(parts[11]));
+
+            if (parts.length > 12) {
+                data.setRankSCA(parseInteger(parts[12]));
+            }
+
+            return data;
+        } catch (Exception e) {
+            log.error("Error parsing rank data line: {} - {}", line, e.getMessage(), e);
             return null;
         }
     }
@@ -103,17 +166,6 @@ public class CutOffDataYearlyParserService {
         return null;
     }
 
-    private boolean isDistrictName(String name) {
-        // Implement a simple check to determine if the name is a district name
-        // For example, check if it's not a number and has a certain length
-        try {
-            Integer.parseInt(name);
-            return false; // If it's a number, it's likely not a district name
-        } catch (NumberFormatException e) {
-            return true; // If it's not a number, it could be a district name
-        }
-    }
-
     private String cleanString(String str) {
         return str != null ? str.trim() : null;
     }
@@ -136,7 +188,7 @@ public class CutOffDataYearlyParserService {
         try {
             return new BigDecimal(str.trim());
         } catch (NumberFormatException e) {
-            System.out.println("Error parsing data line: " + str);
+            log.debug("Error parsing BigDecimal value: {}", str);
             return null;
         }
     }

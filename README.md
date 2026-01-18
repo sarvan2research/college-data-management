@@ -27,4 +27,17 @@ Import Data
 - Admin user related activity(access and usage).
 - Add new table for student-> resultcollege details
 
+# TODO Items
+
+- Create data model all activity
+- Add data ingestion for all activity
+- create enpoint to collate all data and reply back.
+- All check for admin api exposure
+
+Infra
+
+- How to deploy the code 
+- which db being used and how to make it available always.
+- 
+
 

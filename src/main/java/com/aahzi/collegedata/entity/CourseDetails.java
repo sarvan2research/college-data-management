@@ -1,9 +1,13 @@
 package com.aahzi.collegedata.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "course_details")
+@Getter
+@Setter
 public class CourseDetails {
 
     @Id
@@ -31,70 +35,4 @@ public class CourseDetails {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "college_details_id")
     private CollegeDetails collegeDetails;
-
-    // Getters and Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getSlNo() {
-        return slNo;
-    }
-
-    public void setSlNo(String slNo) {
-        this.slNo = slNo;
-    }
-
-    public String getBranchCode() {
-        return branchCode;
-    }
-
-    public void setBranchCode(String branchCode) {
-        this.branchCode = branchCode;
-    }
-
-    public String getApprovedIntake() {
-        return approvedIntake;
-    }
-
-    public void setApprovedIntake(String approvedIntake) {
-        this.approvedIntake = approvedIntake;
-    }
-
-    public String getYearOfStarting() {
-        return yearOfStarting;
-    }
-
-    public void setYearOfStarting(String yearOfStarting) {
-        this.yearOfStarting = yearOfStarting;
-    }
-
-    public String getNbaAccredited() {
-        return nbaAccredited;
-    }
-
-    public void setNbaAccredited(String nbaAccredited) {
-        this.nbaAccredited = nbaAccredited;
-    }
-
-    public String getAccreditationValidUpto() {
-        return accreditationValidUpto;
-    }
-
-    public void setAccreditationValidUpto(String accreditationValidUpto) {
-        this.accreditationValidUpto = accreditationValidUpto;
-    }
-
-    public CollegeDetails getCollegeDetails() {
-        return collegeDetails;
-    }
-
-    public void setCollegeDetails(CollegeDetails collegeDetails) {
-        this.collegeDetails = collegeDetails;
-    }
 }
