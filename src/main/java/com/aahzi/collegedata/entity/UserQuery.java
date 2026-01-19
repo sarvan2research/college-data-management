@@ -20,7 +20,13 @@ public class UserQuery extends BaseEntity {
     private String emailId;
     private String paymentMode;
     private String upiId;
+    private String serviceType;
+
+    @jakarta.persistence.Column(columnDefinition = "TEXT")
     private String queryRequest;
+
+    @jakarta.persistence.Column(columnDefinition = "TEXT")
+    private String queryResult;
 
     @Override
     public String toString() {
@@ -31,7 +37,9 @@ public class UserQuery extends BaseEntity {
                 ", emailId='" + emailId + '\'' +
                 ", paymentMode='" + paymentMode + '\'' +
                 ", upiId='" + upiId + '\'' +
+                ", serviceType='" + serviceType + '\'' +
                 ", queryRequest='" + queryRequest + '\'' +
+                ", queryResult='" + queryResult + '\'' +
                 ", timeCreated=" + timeCreated +
                 ", timeUpdated=" + timeUpdated +
                 ", version=" + version +

@@ -1,7 +1,7 @@
 package com.aahzi.collegedata.service;
 
 import com.aahzi.collegedata.dto.AdmissionDataYearlyDTO;
-import com.aahzi.collegedata.entity.AdmissionDataYearly;
+import com.aahzi.collegedata.entity.*;
 import com.aahzi.collegedata.repository.AdmissionDataYearlyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +85,45 @@ public class AdmissionDataYearlyService {
                 .collect(Collectors.toList());
     }
 
+    public List<AdmissionDataYearlyDTO> searchByDetails(String collegeName, String courseName, String community) {
+        return repository
+                .searchByCollegeAndCourseAndYearRange(
+                        collegeName, courseName, 2021)
+                .stream()
+                .filter(entity -> hasValidCutoff(entity, community))
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private boolean hasValidCutoff(AdmissionDataYearly entity, String community) {
+        if (community == null || community.trim().isEmpty()) {
+            return true;
+        }
+        switch (community.toUpperCase().replace("/", "_")) {
+            case "OC":
+                return entity.getCutOffOC() != null;
+            case "BC":
+                return entity.getCutOffBC() != null;
+            case "BCM":
+                return entity.getCutOffBCM() != null;
+            case "MBC":
+                return entity.getCutOffMBC() != null;
+            case "MBC_DNC":
+                return entity.getCutOffMBCDNC() != null;
+            case "MBC_V":
+            case "MBCV":
+                return entity.getCutOffMBCV() != null;
+            case "SC":
+                return entity.getCutOffSC() != null;
+            case "SCA":
+                return entity.getCutOffSCA() != null;
+            case "ST":
+                return entity.getCutOffST() != null;
+            default:
+                return true;
+        }
+    }
+
     public Optional<AdmissionDataYearlyDTO> getDataById(Long id) {
         return repository.findById(id).map(this::convertToDTO);
     }
@@ -100,6 +139,74 @@ public class AdmissionDataYearlyService {
             repository.saveAll(data);
             log.info("Data loaded from file to database: {} records", data.size());
         }
+    }
+
+    public com.aahzi.collegedata.model.HistoricalCutoffDTO getHistoricalCutoff(String collegeCode, String courseCode,
+            String community) {
+        if (community == null || community.isEmpty()) {
+            throw new IllegalArgumentException("Community cannot be empty");
+        }
+
+        List<AdmissionDataYearly> allYearsData = repository.findByCollegeCodeAndCourseCode(collegeCode, courseCode);
+
+        // Filter and map data for each year
+        List<com.aahzi.collegedata.model.CutoffYearlyData> yearWiseData = allYearsData.stream()
+                .filter(data -> data.getAdmissionYear() >= 2021 && data.getAdmissionYear() <= 2024) // We want
+                                                                                                    // historical data,
+                                                                                                    // 2025 comes from
+                                                                                                    // frontend
+                .map(data -> {
+                    com.aahzi.collegedata.model.CutoffYearlyData yearlyData = new com.aahzi.collegedata.model.CutoffYearlyData();
+                    yearlyData.setYear(data.getAdmissionYear());
+                    yearlyData.setAvailable(true);
+
+                    String comm = community.toUpperCase().replace("/", "_");
+
+                    // Map based on community
+                    if ("OC".equals(comm)) {
+                        yearlyData.setCutoffMark(data.getCutOffOC());
+                        yearlyData.setClosingRank(data.getRankOC());
+                    } else if ("BC".equals(comm)) {
+                        yearlyData.setCutoffMark(data.getCutOffBC());
+                        yearlyData.setClosingRank(data.getRankBC());
+                    } else if ("BCM".equals(comm)) {
+                        yearlyData.setCutoffMark(data.getCutOffBCM());
+                        yearlyData.setClosingRank(data.getRankBCM());
+                    } else if ("MBC".equals(comm)) {
+                        yearlyData.setCutoffMark(data.getCutOffMBC());
+                        yearlyData.setClosingRank(data.getRankMBC());
+                    } else if ("MBC_DNC".equals(comm)) { // Handle variation if any
+                        yearlyData.setCutoffMark(data.getCutOffMBCDNC());
+                        yearlyData.setClosingRank(data.getRankMBCDNC());
+                    } else if ("MBC_V".equals(comm) || "MBCV".equals(comm)) {
+                        yearlyData.setCutoffMark(data.getCutOffMBCV());
+                        yearlyData.setClosingRank(data.getRankMBCV());
+                    } else if ("SC".equals(comm)) {
+                        yearlyData.setCutoffMark(data.getCutOffSC());
+                        yearlyData.setClosingRank(data.getRankSC());
+                    } else if ("SCA".equals(comm)) {
+                        yearlyData.setCutoffMark(data.getCutOffSCA());
+                        yearlyData.setClosingRank(data.getRankSCA());
+                    } else if ("ST".equals(comm)) {
+                        yearlyData.setCutoffMark(data.getCutOffST());
+                        yearlyData.setClosingRank(data.getRankST());
+                    }
+
+                    if (yearlyData.getCutoffMark() == null && yearlyData.getClosingRank() == null) {
+                        yearlyData.setAvailable(false);
+                    }
+
+                    return yearlyData;
+                })
+                .collect(Collectors.toList());
+
+        com.aahzi.collegedata.model.HistoricalCutoffDTO result = new com.aahzi.collegedata.model.HistoricalCutoffDTO();
+        result.setCollegeCode(collegeCode);
+        result.setBranchCode(courseCode);
+        result.setCommunity(community);
+        result.setYearlyData(yearWiseData);
+
+        return result;
     }
 
     private AdmissionDataYearlyDTO convertToDTO(AdmissionDataYearly entity) {

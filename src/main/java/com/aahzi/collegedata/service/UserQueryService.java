@@ -53,7 +53,9 @@ public class UserQueryService {
         existing.setEmailId(dto.getEmailId());
         existing.setPaymentMode(dto.getPaymentMode());
         existing.setUpiId(dto.getUpiId());
+        existing.setServiceType(dto.getServiceType());
         existing.setQueryRequest(dto.getQueryRequest());
+        existing.setQueryResult(dto.getQueryResult());
 
         // Note: version, timeCreated, timeUpdated are handled by JPA/Entity
 
@@ -76,7 +78,9 @@ public class UserQueryService {
         entity.setEmailId(dto.getEmailId());
         entity.setPaymentMode(dto.getPaymentMode());
         entity.setUpiId(dto.getUpiId());
+        entity.setServiceType(dto.getServiceType());
         entity.setQueryRequest(dto.getQueryRequest());
+        entity.setQueryResult(dto.getQueryResult());
         entity.setVersion(dto.getVersion());
         // timeCreated and timeUpdated are usually managed by entity, not set from DTO
         // on creation
@@ -91,7 +95,9 @@ public class UserQueryService {
                 entity.getEmailId(),
                 entity.getPaymentMode(),
                 entity.getUpiId(),
+                entity.getServiceType(),
                 entity.getQueryRequest(),
+                entity.getQueryResult(),
                 entity.getTimeCreated(),
                 entity.getTimeUpdated(),
                 entity.getVersion());

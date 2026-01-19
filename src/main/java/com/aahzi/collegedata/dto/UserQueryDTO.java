@@ -19,7 +19,9 @@ public class UserQueryDTO {
     private String emailId;
     private String paymentMode;
     private String upiId;
+    private String serviceType;
     private String queryRequest;
+    private String queryResult;
     private LocalDateTime timeCreated;
     private LocalDateTime timeUpdated;
     private Integer version;

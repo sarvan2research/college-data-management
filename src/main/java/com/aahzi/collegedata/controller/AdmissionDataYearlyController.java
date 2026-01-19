@@ -108,6 +108,15 @@ public class AdmissionDataYearlyController {
         return ResponseEntity.ok(data);
     }
 
+    @GetMapping("/search/details")
+    public ResponseEntity<List<AdmissionDataYearlyDTO>> searchByDetails(
+            @RequestParam String collegeName,
+            @RequestParam String courseName,
+            @RequestParam String community) {
+        List<AdmissionDataYearlyDTO> data = dataService.searchByDetails(collegeName, courseName, community);
+        return ResponseEntity.ok(data);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<AdmissionDataYearlyDTO> getDataById(@PathVariable Long id) {
         Optional<AdmissionDataYearlyDTO> data = dataService.getDataById(id);
