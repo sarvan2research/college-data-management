@@ -141,55 +141,97 @@ public class AdmissionDataYearlyService {
         }
     }
 
+    @Autowired
+    private CutoffAnalysisOnAllotmentService cutoffAnalysisOnAllotmentService;
+
     public com.aahzi.collegedata.model.HistoricalCutoffDTO getHistoricalCutoff(String collegeCode, String courseCode,
             String community) {
-        if (community == null || community.isEmpty()) {
+        if (community == null || community.trim().isEmpty()) {
             throw new IllegalArgumentException("Community cannot be empty");
         }
 
-        List<AdmissionDataYearly> allYearsData = repository.findByCollegeCodeAndCourseCode(collegeCode, courseCode);
+        String trimmedCollegeCode = collegeCode != null ? collegeCode.trim() : "";
+        String trimmedCourseCode = courseCode != null ? courseCode.trim() : "";
+        String trimmedCommunity = community != null ? community.trim() : "";
+
+        List<AdmissionDataYearly> allYearsData = repository.findByCollegeCodeAndCourseCode(trimmedCollegeCode,
+                trimmedCourseCode);
 
         // Filter and map data for each year
         List<com.aahzi.collegedata.model.CutoffYearlyData> yearWiseData = allYearsData.stream()
                 .filter(data -> data.getAdmissionYear() >= 2021 && data.getAdmissionYear() <= 2024) // We want
-                                                                                                    // historical data,
-                                                                                                    // 2025 comes from
-                                                                                                    // frontend
+                                                                                                    // historical data
                 .map(data -> {
                     com.aahzi.collegedata.model.CutoffYearlyData yearlyData = new com.aahzi.collegedata.model.CutoffYearlyData();
                     yearlyData.setYear(data.getAdmissionYear());
                     yearlyData.setAvailable(true);
 
-                    String comm = community.toUpperCase().replace("/", "_");
+                    String comm = trimmedCommunity.toUpperCase().replace("/", "_");
 
                     // Map based on community
                     if ("OC".equals(comm)) {
                         yearlyData.setCutoffMark(data.getCutOffOC());
                         yearlyData.setClosingRank(data.getRankOC());
+                        yearlyData.setMaxMark(data.getCutOffOC());
+                        yearlyData.setMinMark(data.getCutOffOC());
+                        yearlyData.setMaxRank(data.getRankOC());
+                        yearlyData.setMinRank(data.getRankOC());
                     } else if ("BC".equals(comm)) {
                         yearlyData.setCutoffMark(data.getCutOffBC());
                         yearlyData.setClosingRank(data.getRankBC());
+                        yearlyData.setMaxMark(data.getCutOffBC());
+                        yearlyData.setMinMark(data.getCutOffBC());
+                        yearlyData.setMaxRank(data.getRankBC());
+                        yearlyData.setMinRank(data.getRankBC());
                     } else if ("BCM".equals(comm)) {
                         yearlyData.setCutoffMark(data.getCutOffBCM());
                         yearlyData.setClosingRank(data.getRankBCM());
+                        yearlyData.setMaxMark(data.getCutOffBCM());
+                        yearlyData.setMinMark(data.getCutOffBCM());
+                        yearlyData.setMaxRank(data.getRankBCM());
+                        yearlyData.setMinRank(data.getRankBCM());
                     } else if ("MBC".equals(comm)) {
                         yearlyData.setCutoffMark(data.getCutOffMBC());
                         yearlyData.setClosingRank(data.getRankMBC());
+                        yearlyData.setMaxMark(data.getCutOffMBC());
+                        yearlyData.setMinMark(data.getCutOffMBC());
+                        yearlyData.setMaxRank(data.getRankMBC());
+                        yearlyData.setMinRank(data.getRankMBC());
                     } else if ("MBC_DNC".equals(comm)) { // Handle variation if any
                         yearlyData.setCutoffMark(data.getCutOffMBCDNC());
                         yearlyData.setClosingRank(data.getRankMBCDNC());
+                        yearlyData.setMaxMark(data.getCutOffMBCDNC());
+                        yearlyData.setMinMark(data.getCutOffMBCDNC());
+                        yearlyData.setMaxRank(data.getRankMBCDNC());
+                        yearlyData.setMinRank(data.getRankMBCDNC());
                     } else if ("MBC_V".equals(comm) || "MBCV".equals(comm)) {
                         yearlyData.setCutoffMark(data.getCutOffMBCV());
                         yearlyData.setClosingRank(data.getRankMBCV());
+                        yearlyData.setMaxMark(data.getCutOffMBCV());
+                        yearlyData.setMinMark(data.getCutOffMBCV());
+                        yearlyData.setMaxRank(data.getRankMBCV());
+                        yearlyData.setMinRank(data.getRankMBCV());
                     } else if ("SC".equals(comm)) {
                         yearlyData.setCutoffMark(data.getCutOffSC());
                         yearlyData.setClosingRank(data.getRankSC());
+                        yearlyData.setMaxMark(data.getCutOffSC());
+                        yearlyData.setMinMark(data.getCutOffSC());
+                        yearlyData.setMaxRank(data.getRankSC());
+                        yearlyData.setMinRank(data.getRankSC());
                     } else if ("SCA".equals(comm)) {
                         yearlyData.setCutoffMark(data.getCutOffSCA());
                         yearlyData.setClosingRank(data.getRankSCA());
+                        yearlyData.setMaxMark(data.getCutOffSCA());
+                        yearlyData.setMinMark(data.getCutOffSCA());
+                        yearlyData.setMaxRank(data.getRankSCA());
+                        yearlyData.setMinRank(data.getRankSCA());
                     } else if ("ST".equals(comm)) {
                         yearlyData.setCutoffMark(data.getCutOffST());
                         yearlyData.setClosingRank(data.getRankST());
+                        yearlyData.setMaxMark(data.getCutOffST());
+                        yearlyData.setMinMark(data.getCutOffST());
+                        yearlyData.setMaxRank(data.getRankST());
+                        yearlyData.setMinRank(data.getRankST());
                     }
 
                     if (yearlyData.getCutoffMark() == null && yearlyData.getClosingRank() == null) {
@@ -199,6 +241,39 @@ public class AdmissionDataYearlyService {
                     return yearlyData;
                 })
                 .collect(Collectors.toList());
+
+        // Fetch and append 2025 Data
+        try {
+            com.aahzi.collegedata.model.CutoffSearchResult result2025 = cutoffAnalysisOnAllotmentService
+                    .getCutoff(collegeCode, courseCode, community);
+            if (result2025 != null && result2025.getCutoffStats() != null) {
+                com.aahzi.collegedata.model.CutoffYearlyData yearlyData2025 = new com.aahzi.collegedata.model.CutoffYearlyData();
+                yearlyData2025.setYear(2025);
+                yearlyData2025.setAvailable(true);
+
+                com.aahzi.collegedata.entity.CutoffStats stats = result2025.getCutoffStats();
+
+                // Helper to convert Double to BigDecimal safely
+                java.math.BigDecimal maxMark = stats.getMaxMark() != null
+                        ? java.math.BigDecimal.valueOf(stats.getMaxMark())
+                        : null;
+                java.math.BigDecimal minMark = stats.getMinMark() != null
+                        ? java.math.BigDecimal.valueOf(stats.getMinMark())
+                        : null;
+
+                yearlyData2025.setCutoffMark(maxMark); // defaulting main field to max
+                yearlyData2025.setClosingRank(stats.getMaxRank()); // defaulting main field to max
+
+                yearlyData2025.setMinMark(minMark);
+                yearlyData2025.setMaxMark(maxMark);
+                yearlyData2025.setMinRank(stats.getMinRank());
+                yearlyData2025.setMaxRank(stats.getMaxRank());
+
+                yearWiseData.add(yearlyData2025);
+            }
+        } catch (Exception e) {
+            log.warn("Could not fetch 2025 data for {} {} {}: {}", collegeCode, courseCode, community, e.getMessage());
+        }
 
         com.aahzi.collegedata.model.HistoricalCutoffDTO result = new com.aahzi.collegedata.model.HistoricalCutoffDTO();
         result.setCollegeCode(collegeCode);

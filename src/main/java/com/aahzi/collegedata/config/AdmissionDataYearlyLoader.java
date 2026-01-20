@@ -56,7 +56,6 @@ public class AdmissionDataYearlyLoader implements CommandLineRunner {
         }
     }
 
-
     private void convert2025JsonToTxtIfNeeded() {
         try {
             String targetFile = basePath + File.separator + "cutoff" + File.separator + "2025_CutoffData_V2025.txt";

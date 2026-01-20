@@ -84,23 +84,42 @@ public class CutoffAnalysisOnAllotmentService {
     }
 
     public CutoffSearchResult getCutoff(String collegeCode, String courseCode, String community) {
-        Optional<CollegeCutoff> collegeOpt = repository.findByCollegeCode(collegeCode);
+        String trimmedCollegeCode = collegeCode != null ? collegeCode.trim() : "";
+        String trimmedCourseCode = courseCode != null ? courseCode.trim() : "";
+        String trimmedCommunity = community != null ? community.trim() : "";
+
+        // Normalize community for flexible matching (e.g., MBC/DNC -> MBC_DNC)
+        String normalizedCommunity = trimmedCommunity.replace("/", "_");
+
+        Optional<CollegeCutoff> collegeOpt = repository.findByCollegeCode(trimmedCollegeCode);
 
         if (collegeOpt.isEmpty()) {
-            throw new RuntimeException("College not found with code: " + collegeCode);
+            log.warn("College not found with code: '{}' (original: '{}')", trimmedCollegeCode, collegeCode);
+            throw new RuntimeException("College not found with code: " + trimmedCollegeCode);
         }
 
         CollegeCutoff college = collegeOpt.get();
 
         CourseCutoff course = college.getCourseWiseCutoff().stream()
-                .filter(c -> c.getBranchCode().equalsIgnoreCase(courseCode))
+                .filter(c -> c.getBranchCode().trim().equalsIgnoreCase(trimmedCourseCode))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Course not found with code: " + courseCode));
+                .orElseThrow(() -> {
+                    log.warn("Course not found with code: '{}' in college: '{}'", trimmedCourseCode,
+                            trimmedCollegeCode);
+                    return new RuntimeException("Course not found with code: " + trimmedCourseCode);
+                });
 
         CommunityCutoff communityCutoff = course.getCommunityWiseCutoff().stream()
-                .filter(c -> c.getCommunity().equalsIgnoreCase(community))
+                .filter(c -> {
+                    String cComm = c.getCommunity().trim().replace("/", "_");
+                    return cComm.equalsIgnoreCase(normalizedCommunity);
+                })
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Community not found: " + community));
+                .orElseThrow(() -> {
+                    log.warn("Community not found: '{}' (normalized: '{}') in college: '{}', course: '{}'",
+                            trimmedCommunity, normalizedCommunity, trimmedCollegeCode, trimmedCourseCode);
+                    return new RuntimeException("Community not found: " + trimmedCommunity);
+                });
 
         return new CutoffSearchResult(
                 college.getCollegeCode(),

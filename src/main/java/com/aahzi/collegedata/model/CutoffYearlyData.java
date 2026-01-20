@@ -7,6 +7,10 @@ public class CutoffYearlyData {
     private BigDecimal cutoffMark;
     private Integer closingRank;
     private boolean available;
+    private BigDecimal minMark;
+    private BigDecimal maxMark;
+    private Integer minRank;
+    private Integer maxRank;
 
     public Integer getYear() {
         return year;
@@ -30,6 +34,38 @@ public class CutoffYearlyData {
 
     public void setClosingRank(Integer closingRank) {
         this.closingRank = closingRank;
+    }
+
+    public BigDecimal getMinMark() {
+        return minMark;
+    }
+
+    public void setMinMark(BigDecimal minMark) {
+        this.minMark = minMark;
+    }
+
+    public BigDecimal getMaxMark() {
+        return maxMark;
+    }
+
+    public void setMaxMark(BigDecimal maxMark) {
+        this.maxMark = maxMark;
+    }
+
+    public Integer getMinRank() {
+        return minRank;
+    }
+
+    public void setMinRank(Integer minRank) {
+        this.minRank = minRank;
+    }
+
+    public Integer getMaxRank() {
+        return maxRank;
+    }
+
+    public void setMaxRank(Integer maxRank) {
+        this.maxRank = maxRank;
     }
 
     public boolean isAvailable() {
