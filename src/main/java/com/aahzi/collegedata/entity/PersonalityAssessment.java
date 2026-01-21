@@ -9,16 +9,20 @@ public class PersonalityAssessment {
     private Double communicationSkills;
     private Double analyticalSkills;
     private Double attitude;
+    private Double maths;
+    private Double computerScience;
 
     public PersonalityAssessment() {
     }
 
     public PersonalityAssessment(Double logicalThinking, Double communicationSkills, Double analyticalSkills,
-            Double attitude) {
+            Double attitude, Double maths, Double computerScience) {
         this.logicalThinking = logicalThinking;
         this.communicationSkills = communicationSkills;
         this.analyticalSkills = analyticalSkills;
         this.attitude = attitude;
+        this.maths = maths;
+        this.computerScience = computerScience;
     }
 
     public Double getLogicalThinking() {
@@ -53,6 +57,22 @@ public class PersonalityAssessment {
         this.attitude = attitude;
     }
 
+    public Double getMaths() {
+        return maths;
+    }
+
+    public void setMaths(Double maths) {
+        this.maths = maths;
+    }
+
+    public Double getComputerScience() {
+        return computerScience;
+    }
+
+    public void setComputerScience(Double computerScience) {
+        this.computerScience = computerScience;
+    }
+
     @Override
     public String toString() {
         return "PersonalityAssessment{" +
@@ -60,6 +80,8 @@ public class PersonalityAssessment {
                 ", communicationSkills=" + communicationSkills +
                 ", analyticalSkills=" + analyticalSkills +
                 ", attitude=" + attitude +
+                ", maths=" + maths +
+                ", computerScience=" + computerScience +
                 '}';
     }
 }

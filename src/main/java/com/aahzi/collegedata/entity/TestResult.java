@@ -11,11 +11,32 @@ public class TestResult extends BaseEntity {
     private String email;
     private String timestamp;
     private String timeUsed;
+    private String mobileNumber;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "computerScience", column = @Column(name = "personality_computer_science")),
+            @AttributeOverride(name = "maths", column = @Column(name = "personality_maths")),
+            @AttributeOverride(name = "logicalThinking", column = @Column(name = "personality_logical_thinking")),
+            @AttributeOverride(name = "communicationSkills", column = @Column(name = "personality_communication_skills")),
+            @AttributeOverride(name = "analyticalSkills", column = @Column(name = "personality_analytical_skills")),
+            @AttributeOverride(name = "attitude", column = @Column(name = "personality_attitude"))
+    })
     private PersonalityAssessment personalityAssessment;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "cse", column = @Column(name = "subject_cse")),
+            @AttributeOverride(name = "aids", column = @Column(name = "subject_aids")),
+            @AttributeOverride(name = "biomedicalEngineering", column = @Column(name = "subject_biomedical_engineering")),
+            @AttributeOverride(name = "chemicalEngineering", column = @Column(name = "subject_chemical_engineering")),
+            @AttributeOverride(name = "civilEngineering", column = @Column(name = "subject_civil_engineering")),
+            @AttributeOverride(name = "ece", column = @Column(name = "subject_ece")),
+            @AttributeOverride(name = "eee", column = @Column(name = "subject_eee")),
+            @AttributeOverride(name = "it", column = @Column(name = "subject_it")),
+            @AttributeOverride(name = "mechanicalEngineering", column = @Column(name = "subject_mechanical_engineering")),
+            @AttributeOverride(name = "mechatronicsEngineering", column = @Column(name = "subject_mechatronics_engineering"))
+    })
     private SubjectInterest subjectInterest;
 
     private Double personalityTotal;
@@ -24,12 +45,14 @@ public class TestResult extends BaseEntity {
     public TestResult() {
     }
 
-    public TestResult(String studentId, String name, String email, String timestamp, String timeUsed,
+    public TestResult(String studentId, String name, String email, String mobileNumber, String timestamp,
+            String timeUsed,
             PersonalityAssessment personalityAssessment, SubjectInterest subjectInterest, Double personalityTotal,
             Double subjectTotal) {
         this.studentId = studentId;
         this.name = name;
         this.email = email;
+        this.mobileNumber = mobileNumber;
         this.timestamp = timestamp;
         this.timeUsed = timeUsed;
         this.personalityAssessment = personalityAssessment;
@@ -60,6 +83,14 @@ public class TestResult extends BaseEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
     }
 
     public String getTimestamp() {
@@ -117,6 +148,7 @@ public class TestResult extends BaseEntity {
                 ", studentId='" + studentId + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", mobileNumber='" + mobileNumber + '\'' +
                 ", timestamp='" + timestamp + '\'' +
                 ", timeUsed='" + timeUsed + '\'' +
                 ", personalityTotal=" + personalityTotal +

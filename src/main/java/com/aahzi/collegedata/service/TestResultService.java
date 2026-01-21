@@ -22,13 +22,16 @@ public class TestResultService {
                 getDouble(request.getPersonalityScores(), "Logical Thinking"),
                 getDouble(request.getPersonalityScores(), "Communication Skills"),
                 getDouble(request.getPersonalityScores(), "Analytical Skills"),
-                getDouble(request.getPersonalityScores(), "Attitude"));
+                getDouble(request.getPersonalityScores(), "Attitude"),
+                getDouble(request.getPersonalityScores(), "Maths"),
+                getDouble(request.getPersonalityScores(), "Computer Science"));
 
         SubjectInterest subjectInterest = new SubjectInterest(
-                getDouble(request.getSubjectScores(), "Computer Science"),
+
                 getDouble(request.getSubjectScores(), "CSE"),
-                getDouble(request.getSubjectScores(), "AIDS"),
+                getDouble(request.getSubjectScores(), "AI/DS Engineering"), // Maps to aids
                 getDouble(request.getSubjectScores(), "Biomedical Engineering"),
+                getDouble(request.getSubjectScores(), "Chemical Engineering"),
                 getDouble(request.getSubjectScores(), "Civil Engineering"),
                 getDouble(request.getSubjectScores(), "ECE"),
                 getDouble(request.getSubjectScores(), "EEE"),
@@ -54,6 +57,7 @@ public class TestResultService {
                 request.getStudentId(),
                 request.getName(),
                 request.getEmail(),
+                request.getMobileNumber(),
                 request.getTimestamp(),
                 request.getTimeUsed(),
                 personalityAssessment,
@@ -61,6 +65,16 @@ public class TestResultService {
                 personalityTotal,
                 subjectTotal);
         return repository.save(testResult);
+    }
+
+    public java.util.List<TestResult> searchTestResults(String query) {
+        return repository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrMobileNumberContaining(query,
+                query, query);
+    }
+
+    public java.util.List<TestResult> getAllTestResults() {
+        return repository.findAll(org.springframework.data.domain.Sort
+                .by(org.springframework.data.domain.Sort.Direction.DESC, "timestamp"));
     }
 
     private Double getDouble(Map<String, Object> map, String key) {
@@ -78,6 +92,7 @@ public class TestResultService {
         private String studentId;
         private String name;
         private String email;
+        private String mobileNumber;
         private String timestamp;
         private String timeUsed;
         private Map<String, Object> answers;
@@ -106,6 +121,14 @@ public class TestResultService {
 
         public void setEmail(String email) {
             this.email = email;
+        }
+
+        public String getMobileNumber() {
+            return mobileNumber;
+        }
+
+        public void setMobileNumber(String mobileNumber) {
+            this.mobileNumber = mobileNumber;
         }
 
         public String getTimestamp() {

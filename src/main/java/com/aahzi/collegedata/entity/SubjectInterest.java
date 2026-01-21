@@ -5,10 +5,10 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class SubjectInterest {
 
-    private Double computerScience;
     private Double cse;
     private Double aids;
     private Double biomedicalEngineering;
+    private Double chemicalEngineering;
     private Double civilEngineering;
     private Double ece;
     private Double eee;
@@ -19,27 +19,19 @@ public class SubjectInterest {
     public SubjectInterest() {
     }
 
-    public SubjectInterest(Double computerScience, Double cse, Double aids, Double biomedicalEngineering,
-            Double civilEngineering, Double ece, Double eee, Double it, Double mechanicalEngineering,
-            Double mechatronicsEngineering) {
-        this.computerScience = computerScience;
+    public SubjectInterest(Double cse, Double aids, Double biomedicalEngineering,
+            Double chemicalEngineering, Double civilEngineering, Double ece, Double eee, Double it,
+            Double mechanicalEngineering, Double mechatronicsEngineering) {
         this.cse = cse;
         this.aids = aids;
         this.biomedicalEngineering = biomedicalEngineering;
+        this.chemicalEngineering = chemicalEngineering;
         this.civilEngineering = civilEngineering;
         this.ece = ece;
         this.eee = eee;
         this.it = it;
         this.mechanicalEngineering = mechanicalEngineering;
         this.mechatronicsEngineering = mechatronicsEngineering;
-    }
-
-    public Double getComputerScience() {
-        return computerScience;
-    }
-
-    public void setComputerScience(Double computerScience) {
-        this.computerScience = computerScience;
     }
 
     public Double getCse() {
@@ -64,6 +56,14 @@ public class SubjectInterest {
 
     public void setBiomedicalEngineering(Double biomedicalEngineering) {
         this.biomedicalEngineering = biomedicalEngineering;
+    }
+
+    public Double getChemicalEngineering() {
+        return chemicalEngineering;
+    }
+
+    public void setChemicalEngineering(Double chemicalEngineering) {
+        this.chemicalEngineering = chemicalEngineering;
     }
 
     public Double getCivilEngineering() {
@@ -117,10 +117,11 @@ public class SubjectInterest {
     @Override
     public String toString() {
         return "SubjectInterest{" +
-                "computerScience=" + computerScience +
+
                 ", cse=" + cse +
                 ", aids=" + aids +
                 ", biomedicalEngineering=" + biomedicalEngineering +
+                ", chemicalEngineering=" + chemicalEngineering +
                 ", civilEngineering=" + civilEngineering +
                 ", ece=" + ece +
                 ", eee=" + eee +
