@@ -10,7 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
-@CrossOrigin(origins = "http://localhost:5000")
+@CrossOrigin(origins = "https://internal.aahzi.com/api/admin")
 public class AdminController {
 
     private final AdminRepository adminRepository;
