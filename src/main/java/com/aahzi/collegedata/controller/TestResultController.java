@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/test-results")
-@CrossOrigin(origins = { "https://internal.aahzi.com/api/test-results", "https://aahzi.com" })
+@CrossOrigin(origins = { "https://internal.aahzi.com/api/test-results", "https://aahzi.com", "http://localhost:5000" })
 public class TestResultController {
 
     private final TestResultService service;

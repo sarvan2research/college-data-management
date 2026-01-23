@@ -7,7 +7,7 @@ import com.aahzi.collegedata.service.UserPaymentService;
 
 @RestController
 @RequestMapping("/api/payments")
-@CrossOrigin(origins = { "https://internal.aahzi.com/api/payments", "https://aahzi.com" })
+@CrossOrigin(origins = { "https://internal.aahzi.com/api/payments", "https://aahzi.com", "http://localhost:5000" })
 public class UserPaymentController {
 	
 	private final UserPaymentService service;
