@@ -7,7 +7,7 @@ import com.aahzi.collegedata.service.UserPaymentService;
 
 @RestController
 @RequestMapping("/api/payments")
-@CrossOrigin(origins = { "https://internal.aahzi.com/api/payments", "https://aahzi.com", "http://localhost:5000" })
+@CrossOrigin(origins = { "https://internal.aahzi.com/api/payments", "https://aahzi.com", "http://localhost:5000", "https://aahzi-2026.netlify.app/api/payments" })
 public class UserPaymentController {
 	
 	private final UserPaymentService service;

@@ -10,7 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
-@CrossOrigin(origins = {"http://localhost:5000", "https://internal.aahzi.com/api/admin"})
+@CrossOrigin(origins = {"http://localhost:5000", "https://internal.aahzi.com/api/admin", "https://aahzi-2026.netlify.app/api/admin"})
 public class AdminController {
 
     private final AdminRepository adminRepository;

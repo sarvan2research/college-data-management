@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/cutoff")
-@CrossOrigin(origins = { "https://internal.aahzi.com/api/cutoff", "https://aahzi.com", "http://localhost:5000" })
+@CrossOrigin(origins = { "https://internal.aahzi.com/api/cutoff", "https://aahzi.com", "http://localhost:5000", "https://aahzi-2026.netlify.app/api/cutoff" })
 public class CutoffController {
 
     private final CutoffAnalysisOnAllotmentService cutoffService;

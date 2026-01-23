@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/college-data")
-@CrossOrigin(origins = { "https://internal.aahzi.com/api/college-data","http://localhost:5000", "https://aahzi.com" })
+@CrossOrigin(origins = { "https://internal.aahzi.com/api/college-data","http://localhost:5000", "https://aahzi.com", "https://aahzi-2026.netlify.app/api/college-data" })
 public class AdmissionDataYearlyController {
 
     @Autowired
