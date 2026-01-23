@@ -11,7 +11,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user-query")
-@CrossOrigin(origins = { "https://internal.aahzi.com/api/v1/user-query", "https://aahzi.com", "http://localhost:5000", "https://aahzi-2026.netlify.app/api/v1/user-query" })
+@CrossOrigin(origins = { "https://internal.aahzi.com", "https://aahzi.com", "http://localhost:5000",
+        "https://aahzi-2026.netlify.app" })
 public class UserQueryController {
 
     private final UserQueryService service;
