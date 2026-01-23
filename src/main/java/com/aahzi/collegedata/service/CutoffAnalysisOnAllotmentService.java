@@ -29,9 +29,9 @@ public class CutoffAnalysisOnAllotmentService {
     private final CollegeCutoffRepository repository;
     private final ObjectMapper objectMapper;
 
-    public CutoffAnalysisOnAllotmentService(CollegeCutoffRepository repository) {
+    public CutoffAnalysisOnAllotmentService(CollegeCutoffRepository repository, ObjectMapper objectMapper) {
         this.repository = repository;
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
     }
 
     public void loadDataFromResource(String resourcePath) {
@@ -39,6 +39,11 @@ public class CutoffAnalysisOnAllotmentService {
             ClassPathResource resource = new ClassPathResource(resourcePath);
             if (!resource.exists()) {
                 log.warn("Cutoff Analysis data resource not found: {}", resourcePath);
+                return;
+            }
+
+            if (repository.count() > 0) {
+                log.info("Cutoff Analysis data already exists in database. Skipping import from {}", resourcePath);
                 return;
             }
 

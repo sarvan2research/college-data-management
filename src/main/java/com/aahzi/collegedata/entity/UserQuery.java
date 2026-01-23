@@ -22,10 +22,10 @@ public class UserQuery extends BaseEntity {
     private String upiId;
     private String serviceType;
 
-    @jakarta.persistence.Column(columnDefinition = "TEXT")
+    @jakarta.persistence.Lob
     private String queryRequest;
 
-    @jakarta.persistence.Column(columnDefinition = "TEXT")
+    @jakarta.persistence.Lob
     private String queryResult;
 
     @Override

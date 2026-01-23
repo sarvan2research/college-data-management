@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@org.springframework.transaction.annotation.Transactional
 public class AdmissionDataYearlyService {
 
     @Autowired
@@ -338,17 +339,24 @@ public class AdmissionDataYearlyService {
             return;
         }
 
+        if (repository.count() > 0) {
+            log.info("Admission Data Yearly already exists in database. Skipping import from {}", path);
+            return;
+        }
+
+        java.util.Set<String> processedKeys = new java.util.HashSet<>();
+
         if (fileOrDir.isDirectory()) {
             java.io.File[] files = fileOrDir.listFiles();
             if (files != null) {
                 for (java.io.File file : files) {
                     if (file.isFile() && (file.getName().endsWith(".json") || file.getName().endsWith(".txt"))) {
-                        loadDataFromRawFile(file);
+                        loadDataFromRawFile(file, processedKeys);
                     }
                 }
             }
         } else if (fileOrDir.isFile()) {
-            loadDataFromRawFile(fileOrDir);
+            loadDataFromRawFile(fileOrDir, processedKeys);
         } else {
             log.warn("Unsupported file or directory: {}", path);
         }
@@ -358,6 +366,11 @@ public class AdmissionDataYearlyService {
         java.io.File fileOrDir = new java.io.File(path);
         if (!fileOrDir.exists()) {
             log.warn("Path does not exist: {}", path);
+            return;
+        }
+
+        if (repository.count() > 0) {
+            log.info("Admission Data Yearly already exists in database. Skipping rank data import from {}", path);
             return;
         }
 
@@ -375,19 +388,29 @@ public class AdmissionDataYearlyService {
         }
     }
 
-    private void loadDataFromRawFile(java.io.File file) {
+    private void loadDataFromRawFile(java.io.File file, java.util.Set<String> processedKeys) {
         try {
             String content = new String(Files.readAllBytes(file.toPath()));
             Integer admissionYear = extractYearFromFilename(file.getName());
-            if (admissionYear == null)
-                admissionYear = 2024;
+            if (admissionYear == null) {
+                log.error("Error getting admission year from file: {}", file.getName());
+                throw new RuntimeException("Error getting admission year from file: " + file.getName());
+            }
 
             List<AdmissionDataYearly> entities = parserService.parseRawData(content, admissionYear);
 
-            if (!entities.isEmpty()) {
-                repository.saveAll(entities);
-                log.info("Imported {} records from {} for year {}",
-                        entities.size(), file.getName(), admissionYear);
+            // Deduplicate at record level before saving
+            List<AdmissionDataYearly> uniqueEntities = entities.stream()
+                    .filter(e -> {
+                        String key = e.getAdmissionYear() + "|" + e.getCollegeCode() + "|" + e.getCourseCode();
+                        return processedKeys.add(key);
+                    })
+                    .collect(Collectors.toList());
+
+            if (!uniqueEntities.isEmpty()) {
+                repository.saveAll(uniqueEntities);
+                log.info("Imported {} unique records (of {} total) from {} for year {}",
+                        uniqueEntities.size(), entities.size(), file.getName(), admissionYear);
             }
         } catch (Exception e) {
             log.error("Error loading data from file {}: {}", file.getName(), e.getMessage(), e);

@@ -22,14 +22,15 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@org.springframework.transaction.annotation.Transactional
 public class CollegeDetailsService {
 
     private final CollegeDetailsRepository repository;
     private final ObjectMapper objectMapper;
 
-    public CollegeDetailsService(CollegeDetailsRepository repository) {
+    public CollegeDetailsService(CollegeDetailsRepository repository, ObjectMapper objectMapper) {
         this.repository = repository;
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
     }
 
     public void loadDataFromResource(String resourcePath) {
@@ -37,6 +38,11 @@ public class CollegeDetailsService {
             ClassPathResource resource = new ClassPathResource(resourcePath);
             if (!resource.exists()) {
                 log.warn("College Details data resource not found: {}", resourcePath);
+                return;
+            }
+
+            if (repository.count() > 0) {
+                log.info("College Details data already exists in database. Skipping import from {}", resourcePath);
                 return;
             }
 

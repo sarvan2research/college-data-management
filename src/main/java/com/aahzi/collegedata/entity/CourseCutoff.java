@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import java.util.List;
 import java.util.ArrayList;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Table(name = "course_cutoffs")
-public class CourseCutoff {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Getter
+@Setter
+public class CourseCutoff extends BaseEntity {
 
     private String branchCode;
     private String branchName;
@@ -30,45 +31,5 @@ public class CourseCutoff {
     private List<CommunityCutoff> communityWiseCutoff = new ArrayList<>();
 
     public CourseCutoff() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getBranchCode() {
-        return branchCode;
-    }
-
-    public void setBranchCode(String branchCode) {
-        this.branchCode = branchCode;
-    }
-
-    public String getBranchName() {
-        return branchName;
-    }
-
-    public void setBranchName(String branchName) {
-        this.branchName = branchName;
-    }
-
-    public CutoffStats getOverallCutoff() {
-        return overallCutoff;
-    }
-
-    public void setOverallCutoff(CutoffStats overallCutoff) {
-        this.overallCutoff = overallCutoff;
-    }
-
-    public List<CommunityCutoff> getCommunityWiseCutoff() {
-        return communityWiseCutoff;
-    }
-
-    public void setCommunityWiseCutoff(List<CommunityCutoff> communityWiseCutoff) {
-        this.communityWiseCutoff = communityWiseCutoff;
     }
 }

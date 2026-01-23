@@ -1,20 +1,24 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:collegedb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: 
+    url: "jdbc:oracle:thin:@(description=(retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.ap-mumbai-1.oraclecloud.com))(connect_data=(service_name=gef21c404a80654_aahzidevdb_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"
+    driver-class-name: oracle.jdbc.OracleDriver
+    username: APP_PROD
+    password: "Aahzi_Prod_2026!"
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
         format_sql: true
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+  # h2:
+  #   console:
+  #     enabled: true
+  #     path: /h2-console
 
 app:
   data:
@@ -43,6 +47,8 @@ logging:
   level:
     root: INFO
     com.aahzi: DEBUG
+    #org.hibernate.SQL: DEBUG
+    #org.hibernate.type.descriptor.sql.BasicBinder: TRACE
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
   file:

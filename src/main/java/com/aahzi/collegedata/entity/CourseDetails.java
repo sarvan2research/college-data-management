@@ -8,11 +8,7 @@ import lombok.Setter;
 @Table(name = "course_details")
 @Getter
 @Setter
-public class CourseDetails {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class CourseDetails extends BaseEntity {
 
     @Column(name = "sl_no")
     private String slNo;

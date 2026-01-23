@@ -55,7 +55,7 @@ public class LoggingAspect {
 
         // Log method entry with arguments
         log.info("→ Entering {}.{}() with arguments: {}{}",
-                className, methodName, Arrays.toString(args), correlationInfo);
+                className, methodName, summarizeArgs(args), correlationInfo);
 
         long startTime = System.currentTimeMillis();
         Object result = null;
@@ -84,5 +84,20 @@ public class LoggingAspect {
             // Re-throw the exception to maintain normal exception handling
             throw e;
         }
+    }
+
+    private String summarizeArgs(Object[] args) {
+        if (args == null)
+            return "[]";
+        return Arrays.stream(args)
+                .map(arg -> {
+                    if (arg instanceof String && ((String) arg).length() > 200) {
+                        return ((String) arg).substring(0, 200) + "... (truncated " + ((String) arg).length()
+                                + " chars)";
+                    }
+                    return String.valueOf(arg);
+                })
+                .collect(java.util.stream.Collectors.toList())
+                .toString();
     }
 }

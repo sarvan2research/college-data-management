@@ -6,9 +6,11 @@
 *.iml
 .vscode/
 
+
 # Ignore Maven or Gradle build directories
 target/
 build/
+LOG_DIR_IS_UNDEFINED/
 .oca/
 
 # Ignore log files
