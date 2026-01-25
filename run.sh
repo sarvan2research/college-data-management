@@ -23,12 +23,12 @@
 # --- Configuration ---
 APP_NAME="college-data-management"
 VERSION="1.0.0"
-DEFAULT_JAR_PATH="target/${APP_NAME}-${VERSION}.jar"
+DEFAULT_JAR_PATH="./${APP_NAME}-${VERSION}.jar"
 
 # --- Defaults ---
 JAR_PATH="$DEFAULT_JAR_PATH"
-SERVER_PORT=""
-CONFIG_FILE=""
+SERVER_PORT="8080"
+CONFIG_FILE="./application.yml"
 APP_ARGS=()
 
 # --- Memory Defaults ---

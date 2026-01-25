@@ -52,4 +52,4 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
   file:
-    name: logs/college-app.log
+    name: ./logs/college-app.log

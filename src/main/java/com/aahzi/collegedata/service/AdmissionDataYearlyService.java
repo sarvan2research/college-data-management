@@ -369,11 +369,6 @@ public class AdmissionDataYearlyService {
             return;
         }
 
-        if (repository.count() > 0) {
-            log.info("Admission Data Yearly already exists in database. Skipping rank data import from {}", path);
-            return;
-        }
-
         if (fileOrDir.isDirectory()) {
             java.io.File[] files = fileOrDir.listFiles();
             if (files != null) {
@@ -427,42 +422,54 @@ public class AdmissionDataYearlyService {
             List<AdmissionDataYearly> rankEntities = parserService.parseRankRawData(content, admissionYear);
 
             if (!rankEntities.isEmpty()) {
-                int count = 0;
+                // Fetch all existing records for this year once for batch processing
+                List<AdmissionDataYearly> existingEntities = repository.findByAdmissionYear(admissionYear);
+
+                // Create a lookup map for fast in-memory access
+                java.util.Map<String, AdmissionDataYearly> existingMap = existingEntities.stream()
+                        .collect(java.util.stream.Collectors.toMap(
+                                e -> e.getCollegeCode() + "|" + e.getCourseCode(),
+                                e -> e,
+                                (existing, replacement) -> existing // Keep existing if duplicate (safe-guard)
+                        ));
+
+                List<AdmissionDataYearly> entitiesToUpdate = new java.util.ArrayList<>();
+
                 for (AdmissionDataYearly rankData : rankEntities) {
-                    upsertRankData(rankData);
-                    count++;
+                    String key = rankData.getCollegeCode() + "|" + rankData.getCourseCode();
+                    AdmissionDataYearly entityToUpdate = existingMap.get(key);
+
+                    if (entityToUpdate != null) {
+                        updateRankFields(entityToUpdate, rankData);
+                        entitiesToUpdate.add(entityToUpdate);
+                    } else {
+                        // If record doesn't exist, we save it as a new record (optional, based on
+                        // requirement)
+                        entitiesToUpdate.add(rankData);
+                    }
                 }
-                log.info("Processed {} rank records from {} for year {}",
-                        count, file.getName(), admissionYear);
+
+                if (!entitiesToUpdate.isEmpty()) {
+                    repository.saveAll(entitiesToUpdate);
+                    log.info("Batch processed {} rank records from {} for year {}",
+                            entitiesToUpdate.size(), file.getName(), admissionYear);
+                }
             }
         } catch (Exception e) {
             log.error("Error loading rank data from file {}: {}", file.getName(), e.getMessage(), e);
         }
     }
 
-    private void upsertRankData(AdmissionDataYearly rankData) {
-        Optional<AdmissionDataYearly> existingOpt = repository.findByAdmissionYearAndCollegeCodeAndCourseCode(
-                rankData.getAdmissionYear(), rankData.getCollegeCode(), rankData.getCourseCode());
-
-        AdmissionDataYearly entityToSave;
-        if (existingOpt.isPresent()) {
-            entityToSave = existingOpt.get();
-        } else {
-            entityToSave = rankData;
-        }
-
-        // Update rank fields
-        entityToSave.setRankOC(rankData.getRankOC());
-        entityToSave.setRankBC(rankData.getRankBC());
-        entityToSave.setRankBCM(rankData.getRankBCM());
-        entityToSave.setRankMBC(rankData.getRankMBC());
-        entityToSave.setRankMBCDNC(rankData.getRankMBCDNC());
-        entityToSave.setRankMBCV(rankData.getRankMBCV());
-        entityToSave.setRankSC(rankData.getRankSC());
-        entityToSave.setRankST(rankData.getRankST());
-        entityToSave.setRankSCA(rankData.getRankSCA());
-
-        repository.save(entityToSave);
+    private void updateRankFields(AdmissionDataYearly target, AdmissionDataYearly source) {
+        target.setRankOC(source.getRankOC());
+        target.setRankBC(source.getRankBC());
+        target.setRankBCM(source.getRankBCM());
+        target.setRankMBC(source.getRankMBC());
+        target.setRankMBCDNC(source.getRankMBCDNC());
+        target.setRankMBCV(source.getRankMBCV());
+        target.setRankSC(source.getRankSC());
+        target.setRankST(source.getRankST());
+        target.setRankSCA(source.getRankSCA());
     }
 
     private Integer extractYearFromFilename(String filename) {
